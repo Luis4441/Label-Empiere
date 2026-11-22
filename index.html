@@ -2357,7 +2357,9 @@ window.x33comp=function(){try{const R=rivals();
 
 /* ---- ficha de artista: Grammys con ícono, nominaciones y premios (cuáles son) ---- */
 const CIc=c=>{c=String(c);return /Productor/i.test(c)?'🎛️':/ingenier/i.test(c)?'🎚️':/Artista Nuevo/i.test(c)?'🌟':/Álbum del Año/i.test(c)?'👑':/Canción del Año/i.test(c)?'🎼':/Grabación del Año/i.test(c)?'🎙️':/dúo|grupo/i.test(c)?'👥':/álbum/i.test(c)?'💿':/canción/i.test(c)?'🎵':/Rap/.test(c)?'🎤':/Rock/.test(c)?'🎸':/R&B/.test(c)?'💜':/Country/.test(c)?'🤠':/Altern/.test(c)?'🌿':/Electr/.test(c)?'🎧':/Pop/.test(c)?'✨':'🏆'};
-function gramList(id){const out=[],ed=(S.gh||[]).map(g=>({y:g.y,noms:g.noms||[],done:true}));
+let GLC={k:'',m:{}};
+function gramList(id){const sg=S.week+':'+(S.gh||[]).length+':'+(S.noms||[]).length+':'+(S.noms||[]).reduce((q,c)=>q+(c.w!=null?1:0),0)+':'+S.S.length;if(GLC.k!==sg||GLC.s!==S){GLC={k:sg,s:S,m:{}}}return GLC.m[id]||(GLC.m[id]=gramList0(id))}
+function gramList0(id){const out=[],ed=(S.gh||[]).map(g=>({y:g.y,noms:g.noms||[],done:true}));
  try{const Y=yr(S.week);if(S.noms&&S.noms.length&&ny()==Y&&!ed.some(g=>g.y==Y))ed.push({y:Y,noms:S.noms,done:false})}catch(er){}
  ed.sort((p,q)=>p.y-q.y).forEach(g=>g.noms.forEach(c=>{if(c.pr)return;
   const mi=(c.n||[]).filter(i=>{const s=S.S[i];return s&&window.x22in&&window.x22in(s,id,c)});if(!mi.length)return;
@@ -2454,7 +2456,8 @@ function vary(p,hd){if(p.ty=='idle')return p;const ctx=p.bo<0?(p.ty=='fr'?'frn':
  if(ar){const i=cm.indexOf(ar);if(i>1){cm.splice(i,1);cm.splice(1,0,ar)}}
  p.cm=cm;return p}
 const FRS=['Lo estoy escuchando en bucle 🔥','Esto es una locura, qué orgullo 💜','Ya es mi favorito del año, sin discusión','Crack total, felicidades 👏','Qué ganas de verlo en vivo 🙌','Siempre apoyándote, ya lo sabes 🫶'],FRN=['Ánimo, el próximo viene mejor 💪','No les hagas caso, sigue creando 🙏','Aquí estoy para lo que necesites 🫂'],FRG=['¡Felicidades, te lo mereces todo! 🏆','Qué orgullo verte ahí, lo tenías que lograr 🥹','Cruzo los dedos por ti 🤞','A por todas, te lo mereces 🎉'],FRA=['Gracias, significa mucho viniendo de ti 💜','Eres de los que siempre están, gracias 🙏','Te quiero, gracias por el apoyo 🫶','Jajaja gracias, ya hablamos 😄'],COLC=['Fue un honor trabajar contigo en este tema 🎶','Qué bien nos quedó esta colaboración, gracias por la invitación 🔥','Esto fue magia en el estudio, repetimos cuando quieras 🎤','Orgullo total de lo que hicimos juntos 💜'],COLA=['Gracias a ti por sumarte, el tema no sería lo mismo 🙌','Fue un placer, siempre quiero volver al estudio contigo 🎧','Lo mejor de este proyecto fue trabajar contigo 💫'];
-function frOf(a,k,y,n){try{const T_=window.x22t;if(!T_||!T_.aff)return[];return S.A.filter(b=>b.id!=a.id&&!b.ret&&b.deb!=null&&b.deb<=y&&T_.aff(a.id,b.id)>=55).map(b=>({b,h:hsx(k+'F'+b.id)})).sort((p,q)=>p.h-q.h).slice(0,n).map(z=>z.b)}catch(er){return[]}}
+let FRC={w:-1,m:{}};
+function frOf(a,k,y,n){try{const T_=window.x22t;if(!T_||!T_.aff)return[];if(FRC.w!==S.week||FRC.s!==S){FRC={w:S.week,s:S,m:{}}}const ck=a.id+'|'+y;let L=FRC.m[ck];if(!L)L=FRC.m[ck]=S.A.filter(b=>b.id!=a.id&&!b.ret&&b.deb!=null&&b.deb<=y&&T_.aff(a.id,b.id)>=55);return L.map(b=>({b,h:hsx(k+'F'+b.id)})).sort((p,q)=>p.h-q.h).slice(0,n).map(z=>z.b)}catch(er){return[]}}
 const GPH={Pop:'el pop',Rap:'el rap','R&B':'el R&B',Rock:'el rock',Alternativo:'lo alternativo',Electrónica:'la electrónica',Country:'el country'};
 const FQ={
  sng:['{t} no sale de mi lista desde que lo escuché 🔥','El puente de {t} me dejó sin palabras, {h}. Qué nivel','Escuché {t} tres veces seguidas y sigo sin encontrarle defectos 🎧','Se nota que le pusiste el alma a {t}. Me encantó cómo suena todo','Eso es crecer como artista: {t} suena más maduro que lo anterior','La producción de {t} está a otro nivel, ¿quién mezcló esto? 👀','Ese estribillo de {t} se me pegó todo el día jajaja','Quiero ver {t} en vivo, tiene pinta de explotar en un estadio 🏟️','Llevaba semanas esperando {t} y valió cada día 🙌','Qué valentía hacer esto con tu sonido. Respeto total, {h}','Me dio ganas de volver al estudio ahora mismo 🎛️','Lo puse en el estudio y todos paramos a prestar atención a {t}'],
@@ -2526,7 +2529,7 @@ function folTick(){const W=S.week;if(S.fwk===W)return;S.fwk=W;const imp={},add=(
   if(z.pos&&age<52){add(z.a,z.pos==1?.012:z.pos<=10?.005:z.pos<=40?.002:.0007);if(z.viral>0)add(z.a,Math.min(5,z.viral)*.0012)}});
  (S.tours||[]).forEach(t=>{if(t.status==='cancel')return;const en=t.end!=null?t.end:t.st+8;if(W>=t.st&&W<=en)add(t.a,.004)});
  try{if(typeof t52State==='function')t52State().rivals.forEach(t=>{if(t.status==='on'){add(t.a,.004);if(t.open!=null)add(t.open,.004)}})}catch(er){}
- S.A.forEach(a=>{if(a.deb==null)return;const cap=fol0(a);if(a.fw==null)a.fw=cap;const prev=a.fw;let g=imp[a.id]||0;
+ const FC=window.FOLCAP=window.FOLCAP||{};S.A.forEach(a=>{if(a.deb==null)return;let cap;if(a.ret&&a.fw!=null&&FC[a.id]&&W-FC[a.id].w<26)cap=FC[a.id].c;else{cap=fol0(a);if(a.ret)FC[a.id]={c:cap,w:W+(a.id%26)-13}}if(a.fw==null)a.fw=cap;const prev=a.fw;let g=imp[a.id]||0;
   const aw=a.aw||0;if(a.fwAw==null)a.fwAw=aw;if(aw>a.fwAw){g+=(aw-a.fwAw)*.05;a.fwAw=aw}
   const idle=W-(a.last==null?-99:a.last);if(!a.hi&&!a.ret&&idle>20)g-=Math.min(.004,(idle-20)/6000);if(a.ret)g-=.0008;
   g+=.0012*(1+a.pop/50)+(R()-.5)*.004;
@@ -3601,8 +3604,10 @@ const st=document.createElement('style');st.textContent='.cxb{margin-left:6px;pa
 const MT=['filter','some','every','find','findIndex','forEach','map','flatMap','reduce','slice','concat'];
 function cxFix(){try{if(!S||!S.S||S.S.cxd)return;if(!S.S.some(s=>s&&s.cx))return;
 Object.defineProperty(S.S,'cxd',{value:1,enumerable:false,configurable:true});
-MT.forEach(m=>Object.defineProperty(S.S,m,{enumerable:false,configurable:true,writable:true,value:function(...a){return Array.prototype[m].apply(Array.prototype.filter.call(this,x=>!(x&&x.cx)),a)}}));
-Object.defineProperty(S.S,Symbol.iterator,{enumerable:false,configurable:true,writable:true,value:function(){return Array.prototype.filter.call(this,x=>!(x&&x.cx))[Symbol.iterator]()}})}catch(e){console.error(e)}}
+const arr=S.S;let cc=null,cn=-1,cl_=null,cv=-1;
+const live=()=>{const n=arr.length,l=n?arr[n-1]:null,v=window.CXV|0;if(cc&&cn===n&&cl_===l&&cv===v)return cc;cc=Array.prototype.filter.call(arr,x=>!(x&&x.cx));cn=n;cl_=l;cv=v;return cc};
+MT.forEach(m=>Object.defineProperty(S.S,m,{enumerable:false,configurable:true,writable:true,value:function(...a){return Array.prototype[m].apply(live(),a)}}));
+Object.defineProperty(S.S,Symbol.iterator,{enumerable:false,configurable:true,writable:true,value:function(){return live()[Symbol.iterator]()}})}catch(e){console.error(e)}}
 const _ldC=load;load=function(){const r=_ldC();cxFix();return r};
 const _ngC=newGame;newGame=function(){const r=_ngC.apply(this,arguments);cxFix();return r};
 const _uiC=ui;ui=function(){cxFix();_uiC()};
@@ -3624,7 +3629,7 @@ const o=S.S.filter(x=>x.a==a.id&&x.id!=s.id&&x.wk>S.week).map(x=>x.wk);
 if(c.last!=null&&!o.length&&(a.last==s.wk||a.last>c.last))a.last=Math.max(c.last,...S.S.filter(x=>x.a==a.id&&x.id!=s.id&&x.wk<=S.week).map(x=>x.wk),-1e9);
 if(c.deb==null&&a.deb!=null&&!S.S.some(x=>x.a==a.id&&x.id!=s.id))a.deb=null}
 else if(s.type=='Álbum')a.alb++}
-s.cx=1;s.wk=-1e6;s.weeks=0;s.pos=null;s.pts=0;
+s.cx=1;window.CXV=(window.CXV|0)+1;s.wk=-1e6;s.weeks=0;s.pos=null;s.pts=0;
 news('🚫 Cancelado: '+s.type+' "'+s.t+'"'+(a?' de '+a.n:'')+' · reembolso '+fm(ref));
 cxFix();save();ui()};
 /* botón dentro del calendario (solo en esa vista, solo semanas futuras) */
@@ -4271,10 +4276,10 @@ function edges(s,l){const a=S.A[s.a],q=sv(s),m=l.map(sv),o=[];
  return o}
 const uniqA=(r)=>{const sa=new Set();return r.filter(z=>!sa.has(z.s.a)&&sa.add(z.s.a))};
 const sName=(s,nu)=>nu?S.A[s.a].n:'«'+s.t+'» de '+sn(s);
-function buildNom(){const items=[];cats().forEach(([c,l])=>{if(l.length<2)return;const nu=c=='Mejor Artista Nuevo';let r=l.map(q=>({s:q,v:pkv(q,R()*14)})).sort((p,q)=>q.v-p.v);if(nu)r=uniqA(r);r=r.slice(0,PM.slice(0,3).includes(c)?8:5);if(r.length<2)return;
+function buildNom(){const items=[];cats().forEach(([c,l])=>{if(l.length<2)return;const nu=c=='Mejor Artista Nuevo';let r=l.map(q=>({s:q,v:pkv(q,R()*14)})).sort((p,q)=>q.v-p.v);r=uniqA(r);r=r.slice(0,PM.slice(0,3).includes(c)?8:5);if(r.length<2)return;
  items.push({c,m:PM.includes(c)?1:0,k:r.map(z=>nu?z.s.a:z.s.id),ps:r.map(z=>({t:sName(z.s,nu),me:z.s.l==0?1:0,why:cap(edges(z.s,l)[0])}))})});return items}
 function buildWin(){const items=[];S.noms.filter(c=>!c.pr&&c.w==null).forEach(c=>{const l=c.n.map(i=>S.S[i]).filter(Boolean);if(l.length<2)return;const nu=c.c=='Mejor Artista Nuevo';
- const r=l.map(q=>({s:q,v:pkv(q,R()*14)})).sort((p,q)=>q.v-p.v),r2=nu?(r.find(z=>z.s.a!=r[0].s.a)||r[1]):r[1],b=r[0].s,n2=r2.s,gap=r[0].v-r2.v;
+ const r=l.map(q=>({s:q,v:pkv(q,R()*14)})).sort((p,q)=>q.v-p.v),r2=(r.find(z=>z.s.a!=r[0].s.a)||r[1]),b=r[0].s,n2=r2.s,gap=r[0].v-r2.v;
  items.push({c:c.c,m:PM.includes(c.c)?1:0,id:nu?b.a:b.id,p:sName(b,nu),me:b.l==0?1:0,why:edges(b,l).slice(0,2),alt:sName(n2,nu),altw:edges(n2,l)[0],cf:gap>9?'Favorito claro':gap>4?'Ligera ventaja':'Carrera cerrada'})});return items}
 function pushArt(a){const x=X();x.art=(x.art||[]).filter(z=>z.id!==a.id);x.art.push(a);if(x.art.length>8)x.art=x.art.slice(-8)}
 function scoreNom(a){let h=0,t=0,hm=0,tm=0;a.items.forEach(it=>{const c=S.noms.find(z=>z.c==it.c&&!z.pr);if(!c)return;const nu=it.c=='Mejor Artista Nuevo',act=nu?[...new Set(c.n.map(i=>S.S[i].a))]:c.n.slice();
