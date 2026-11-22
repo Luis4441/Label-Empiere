@@ -1497,6 +1497,10 @@ const st=document.createElement('style');st.textContent=`
 #gm .gwc .gi{flex:0 0 56px}#gm .gwc .gi .cv{width:56px;height:56px}#gm .gwc small{color:#f5c542;letter-spacing:.14em;font-size:11px}#gm .gwc b{font-size:17px;display:block}
 #gm .gwc .sp{position:absolute;font-size:14px;opacity:0;animation:gmSpark 2.4s infinite}
 #gm .gbtn{display:flex;gap:8px;margin-top:10px}#gm .gbtn button{flex:1;padding:11px 6px;font-size:13px}
+#gm .gl{background:#1a1a26;border:1px solid var(--b);border-radius:12px;padding:9px 11px;font-size:13px;line-height:1.4;opacity:0;animation:gmUp .8s ease-out forwards}#gm .gl.me{border-color:var(--a);background:#b388ff1a}#gm .gl b{color:#f5c542}
+#gm .gcam{text-align:center;color:#cfd8e3;font-size:13px;margin:6px 0 0;font-style:italic;animation:gmUp .8s both}
+#gm .grx{margin-top:8px;padding:9px 11px;border-radius:12px;background:#12121c;border:1px dashed #f5c54266;font-size:13px;line-height:1.4;animation:gmUp .9s .6s both}
+#gm .gbtn{flex-wrap:wrap}#gm .gbtn button{flex:1 1 40%}
 @keyframes gmIn{from{opacity:0}to{opacity:1}}
 @keyframes gmUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @keyframes gmDots{0%,100%{opacity:.2}50%{opacity:1}}
@@ -1511,26 +1515,77 @@ const item=(c,id)=>{if(!c.art&&!c.lab&&!c.pr&&c.c=='Mejor Artista Nuevo'&&S.S[id
  const s=S.S[id];if(!s||!S.A[s.a])return null;return{t:s.t,sub:S.A[s.a].n+(s.ft!=null&&S.A[s.ft]?' & '+S.A[s.ft].n:'')+' · '+ln_(s.l)+(s.type=='Álbum'?' · Álbum':''),cv:cov(s),me:s.l==0||(s.ft!=null&&!!S.A[s.ft]&&S.A[s.ft].l==0)}};
 const card=(c,id)=>{const o=item(c,id);if(!o)return null;const d=document.createElement('div');d.className='gn'+(o.me?' me':'');d.dataset.id=id;d.innerHTML='<div class="gi">'+o.cv+'</div><div class="gx"><b>'+e(o.t)+'</b><span class="m">'+e(o.sub)+'</span></div>'+(o.me?'<span>⭐</span>':'');return d};
 const clr=()=>{if(GM.t){clearTimeout(GM.t);GM.t=null}};
+const hq=t=>{let h=7;for(const c of String(t))h=(h*31+c.charCodeAt(0))>>>0;return h};
+const pk=(arr,k)=>arr[hq(k)%arr.length];
+const OUT=['con un traje plateado que ya es tendencia','de negro total y gafas oscuras','con una capa dorada que roba todas las miradas','de blanco impecable, entre flashes','con un look futurista que divide opiniones','con lentejuelas que brillan bajo las cámaras'];
+const ARR=['Confiesa que tiene más nervios que en su primer show.','Asegura que solo quiere disfrutar la noche.','Bromea con que ya tiene el discurso en el bolsillo… por si acaso.','Cuenta que casi no pudo dormir pensando en este momento.','Saluda a los fans que gritan su nombre.'];
+const CAM=['aprieta las manos con los nervios','respira hondo y mira al techo','sonríe sin quitar la vista del escenario','cruza los dedos bajo la mesa','murmura algo que parece una oración'];
+const SPW=['«No me lo esperaba… gracias a mi equipo y a mis fans, esto es de todos.»','«Escribí esto en mi peor momento. Míranme ahora.»','«Se lo dedico a quienes nunca dejaron de creer en mí.»','«Estoy temblando… gracias a mi disquera por apostar por mí.»'];
+const TEAR=['rompe en llanto en el escenario','se queda sin palabras unos segundos','abraza el trofeo y no puede dejar de sonreír','mira a la cámara y manda un beso a su familia'];
+const LOS=['aplaude con una sonrisa que no le llega a los ojos','se encoge de hombros: «hoy no era mi noche»','felicita al ganador y promete volver más fuerte','se queda mirando al vacío un segundo… y aplaude'];
+const WSP=['agradece entre lágrimas a su familia','sube al escenario y el público se pone de pie','dedica el premio a sus fans con la voz quebrada','hace reír a toda la sala con su discurso'];
+const isBig=c=>!!c&&!c.pr&&MAIN.includes(c.c);
+function aid(c,id){if(c.art)return id;if(c.lab||c.pr)return null;const s=S.S[id];return s?s.a:null}
+function who(c,id){if(c.lab){const L=S.L[id];return L?L.n:''}if(c.pr){const P=S.P&&S.P[id];return P?P.n:''}const a=S.A[aid(c,id)];return a?a.n:''}
+const mineIds=c=>(c.n||[]).filter(id=>{const o=item(c,id);return o&&o.me});
+const seq=(f,d,i)=>{clr();if(i>=f.length)return;f[i]();GM.t=setTimeout(()=>seq(f,d,i+1),d[i])};
+const gline=l=>{const d=document.createElement('div');d.className='gl'+(l.me?' me':'');d.innerHTML=l.h;return d};
 function shell(){let g=document.getElementById('gm');if(g)g.remove();g=document.createElement('div');g.id='gm';
- g.innerHTML='<div class="gh" id="gmh"></div><div class="gt" id="gmt"></div><div class="gb" id="gmb"></div><div class="gbtn"><button onclick="gmAll()">Mostrar todos</button><button class="p" id="gmn" onclick="gmNext()">Siguiente categoría</button><button onclick="gmClose()">Cerrar</button></div>';
+ g.innerHTML='<div class="gh" id="gmh"></div><div class="gt" id="gmt"></div><div class="gb" id="gmb"></div><div class="gbtn"><button onclick="gmAll()">Mostrar todos</button><button id="gmk" onclick="gmSkip()" style="display:none">⏭ Saltar bloque</button><button class="p" id="gmn" onclick="gmNext()">Siguiente categoría</button><button onclick="gmClose()">Cerrar</button></div>';
  document.body.appendChild(g);g.firstChild.style.maxWidth='460px'}
-function showCat(){clr();const c=GM.cats[GM.i];if(!c)return gmClose();GM.k=0;
- document.getElementById('gmh').textContent=(GM.meta?GM.meta.ic+' '+GM.meta.name+' ':GM.mode=='nom'?'🎼 Nominaciones Grammy ':'🏆 Ceremonia Grammy ')+GM.y+' · '+(GM.i+1)+' / '+GM.cats.length;
- const t=document.getElementById('gmt');t.className='gt'+(MAIN.includes(c.c)&&!c.pr?' big':'');t.style.animation='none';void t.offsetWidth;t.style.animation='';t.textContent=c.c;
- document.getElementById('gmb').innerHTML='';document.getElementById('gmn').textContent=GM.i>=GM.cats.length-1?'Finalizar':'Siguiente categoría';
- GM.t=setTimeout(one,650)}
-function one(){clr();const c=GM.cats[GM.i],b=document.getElementById('gmb');if(!c||!b)return;if(GM.k<c.n.length){const d=card(c,c.n[GM.k++]);if(d)b.appendChild(d);b.scrollTop=b.scrollHeight;GM.t=setTimeout(one,GM.k<c.n.length?800:900)}else if(GM.mode=='cer')suspense()}
-function suspense(){clr();const b=document.getElementById('gmb');if(!b||b.querySelector('.gy'))return;const y=document.createElement('div');y.className='gy';y.innerHTML=((GM.cats[GM.i]&&GM.cats[GM.i].ln)||(GM.meta&&GM.meta.ln)||'Y el Grammy es para')+'<i>.</i><i>.</i><i>.</i>';b.appendChild(y);b.scrollTop=b.scrollHeight;GM.t=setTimeout(reveal,2000)}
+function showCat(){clr();const c=GM.cats[GM.i];if(!c)return gmClose();GM.k=0;GM.sus=-1;
+ const real=GM.cats.filter(z=>!z.inter);
+ document.getElementById('gmh').textContent=(GM.meta?GM.meta.ic+' '+GM.meta.name+' ':GM.mode=='nom'?'🎼 Nominaciones Grammy ':'🏆 Ceremonia Grammy ')+GM.y+(c.inter?'':' · '+(real.indexOf(c)+1)+' / '+real.length);
+ const t=document.getElementById('gmt');t.className='gt'+((isBig(c)||c.inter)?' big':'');t.style.animation='none';void t.offsetWidth;t.style.animation='';t.textContent=c.inter?c.ic+' '+c.title:c.c;
+ document.getElementById('gmb').innerHTML='';
+ document.getElementById('gmn').textContent=GM.i>=GM.cats.length-1?'Finalizar':c.inter?'Continuar':'Siguiente categoría';
+ const sk=document.getElementById('gmk');if(sk)sk.style.display=GM.blocks&&GM.cats.slice(GM.i+1).some(z=>z.inter)?'':'none';
+ GM.t=setTimeout(c.inter?inl:one,c.inter?500:650)}
+function inl(){clr();const c=GM.cats[GM.i],b=document.getElementById('gmb');if(!c||!c.inter||!b)return;if(GM.k<c.lines.length){b.appendChild(gline(c.lines[GM.k++]));b.scrollTop=b.scrollHeight;GM.t=setTimeout(inl,950)}}
+function one(){clr();const c=GM.cats[GM.i],b=document.getElementById('gmb');if(!c||!b)return;if(GM.k<c.n.length){const d=card(c,c.n[GM.k++]);if(d)b.appendChild(d);b.scrollTop=b.scrollHeight;GM.t=setTimeout(one,GM.k<c.n.length?(isBig(c)?1100:800):(isBig(c)?1400:900))}else if(GM.mode=='cer')suspense()}
+function suspense(){clr();const b=document.getElementById('gmb');if(!b||GM.sus===GM.i||b.querySelector('.gwc'))return;GM.sus=GM.i;
+ const c=GM.cats[GM.i],big=isBig(c),fin=big&&c.c=='Álbum del Año',mi=mineIds(c),add=(cl,h)=>{const d=document.createElement('div');d.className=cl;d.innerHTML=h;b.appendChild(d);b.scrollTop=b.scrollHeight};
+ const f=[],d=[];
+ if(big){f.push(()=>add('gcam','📨 El presentador abre el sobre…'));d.push(1300)}
+ if(fin){f.push(()=>add('gcam','🥁 Silencio total en la sala…'));d.push(1500)}
+ if(mi.length){f.push(()=>add('gcam','📷 La cámara enfoca a <b>'+e(who(c,mi[0]))+'</b>, que '+pk(CAM,c.c+GM.y+mi[0])+'.'));d.push(1500)}
+ f.push(()=>add('gy',((c&&c.ln)||(GM.meta&&GM.meta.ln)||'Y el Grammy es para')+'<i>.</i><i>.</i><i>.</i>'));d.push(fin?3800:big?2600:GM.blocks?1500:2000);
+ f.push(reveal);d.push(0);seq(f,d,0)}
 function reveal(){clr();const c=GM.cats[GM.i],b=document.getElementById('gmb');if(!c||!b||b.querySelector('.gwc'))return;const o=item(c,c.w);if(!o)return;
  b.querySelectorAll('.gn').forEach(n=>{if(+n.dataset.id!==c.w)n.classList.add('dim')});
  const w=document.createElement('div');w.className='gwc';w.innerHTML='<div class="gi">'+o.cv+'</div><div><small>'+(c.wl||'🏆 GANADOR')+'</small><b>'+e(o.t)+'</b><span class="m">'+e(o.sub)+(o.me?' · ⭐ Tu disquera':'')+'</span></div>'+['✨:8%:20%:0s','🎉:88%:30%:.5s','✨:75%:8%:1s','⭐:20%:75%:1.4s'].map(x=>{const p=x.split(':');return '<span class="sp" style="left:'+p[1]+';top:'+p[2]+';animation-delay:'+p[3]+'">'+p[0]+'</span>'}).join('');
- b.appendChild(w);b.scrollTop=b.scrollHeight}
+ b.appendChild(w);
+ const wn=who(c,c.w),mi=mineIds(c),k=c.c+GM.y;let rx='';
+ if(wn){if(o.me)rx='🎤 <b>'+e(wn)+'</b> '+pk(TEAR,k+wn)+': '+pk(SPW,k+wn+'s');else if(mi.length)rx='💔 <b>'+e(who(c,mi[0]))+'</b> '+pk(LOS,k+mi[0]);else if(isBig(c)||c.art)rx='🎤 <b>'+e(wn)+'</b> '+pk(WSP,k+wn)}
+ if(rx){const r=document.createElement('div');r.className='grx';r.innerHTML=rx;b.appendChild(r)}
+ b.scrollTop=b.scrollHeight}
 window.gmAll=function(){clr();const c=GM.cats[GM.i],b=document.getElementById('gmb');if(!c||!b)return;
+ if(c.inter){while(GM.k<c.lines.length){const d=gline(c.lines[GM.k++]);d.style.animationDuration='.3s';b.appendChild(d)}return}
  while(GM.k<c.n.length){const d=card(c,c.n[GM.k++]);if(d){d.style.animationDuration='.3s';b.appendChild(d)}}
- if(GM.mode=='cer')suspense()};
+ if(GM.mode=='cer'){if(GM.sus===GM.i&&!b.querySelector('.gwc'))reveal();else suspense()}};
+window.gmSkip=function(){clr();let j=GM.i+1;while(j<GM.cats.length&&!GM.cats[j].inter)j++;if(j>=GM.cats.length)return;GM.i=j;showCat()};
 window.gmNext=function(){clr();GM.i++;if(GM.i>=GM.cats.length)return gmClose();showCat()};
 window.gmClose=function(){clr();const g=document.getElementById('gm');if(g)g.remove();GM.open=false};
-function start(mode,y,list,meta){GM.meta=meta||null;GM.mode=mode;let l=list||order(S.noms||[]);if(!list&&mode=='cer'&&window.x22life){const lt=window.x22life(y);if(lt)l=l.concat([lt])}if(!l.length)return;GM.mode=mode;GM.y=y;GM.cats=l;GM.i=0;GM.open=true;shell();showCat()}window.gmStart2=start;
+function nomA(l){const m={};l.forEach(c=>{if(c.pr||c.lab)return;(c.n||[]).forEach(id=>{const x=aid(c,id),a=x!=null&&S.A[x];if(!a)return;const o=item(c,id),z=m[x]||(m[x]={a,n:0,me:false});z.n++;if(o&&o.me)z.me=true})});return m}
+function carpet(l,y){const L=[{h:'La alfombra roja de los Grammy <b>'+y+'</b> está llena de flashes.'}],ar=Object.values(nomA(l)),mi=ar.filter(z=>z.me).sort((p,q)=>q.n-p.n).slice(0,4),ot=ar.filter(z=>!z.me).sort((p,q)=>q.n-p.n||q.a.pop-p.a.pop).slice(0,3);
+ mi.concat(ot).forEach(z=>L.push({me:z.me,h:'📸 <b>'+e(z.a.n)+'</b>'+(z.me?' ⭐':'')+' llega '+pk(OUT,z.a.n+y)+' · '+z.n+(z.n>1?' nominaciones':' nominación')+'. '+pk(ARR,z.a.n+y+'a')}));
+ return {inter:1,ic:'🔴',title:'Alfombra roja',lines:L}}
+function blk(cs,sub,ext){const L=[{h:sub+' Se entregan <b>'+cs.length+'</b> premio'+(cs.length>1?'s':'')+'.'}],mi=cs.filter(c=>mineIds(c).length);
+ L.push(mi.length?{me:1,h:'⭐ Tu disquera compite en <b>'+mi.length+'</b> categoría'+(mi.length>1?'s':'')+': '+e(mi.slice(0,3).map(c=>c.c).join(', '))+(mi.length>3?'…':'')+'.'}:{h:'Tu disquera no tiene nominaciones en este bloque.'});
+ if(ext)L.push({h:ext});return L}
+function closing(y){const W={},mine=[];let nm=0;(S.noms||[]).forEach(c=>{if(c.pr||c.lab)return;if(mineIds(c).length)nm++;if(c.w==null)return;const x=aid(c,c.w);if(x!=null)W[x]=(W[x]||0)+1;const o=item(c,c.w);if(o&&o.me)mine.push(c.c)});
+ const top=Object.keys(W).sort((p,q)=>W[q]-W[p])[0],L=[];
+ L.push(top!=null&&W[top]>=2&&S.A[top]?{h:'🏆 La noche fue de <b>'+e(S.A[top].n)+'</b>: <b>'+W[top]+'</b> Grammys.'}:{h:'🎉 Una noche muy repartida: ningún artista dominó la ceremonia.'});
+ const al=(S.noms||[]).find(c=>!c.pr&&c.c=='Álbum del Año'&&c.w!=null),as=al&&S.S[al.w];if(as)L.push({h:'💿 Álbum del Año: <b>«'+e(as.t)+'»</b> de '+e(who(al,al.w))+'.'});
+ L.push(nm?{me:1,h:'⭐ Tu disquera ganó <b>'+mine.length+'</b> de <b>'+nm+'</b> categorías en las que estaba nominada'+(mine.length?': '+e(mine.slice(0,4).join(', '))+(mine.length>4?'…':'')+'.':'.')}:{h:'Esta vez tu disquera no tuvo nominaciones.'});
+ return {inter:1,ic:'🌙',title:'Cierre de la noche',lines:L}}
+function blocks(l,lt,y){const main=l.filter(isBig),gen=l.filter(c=>!isBig(c)&&!c.pr&&isGenre(c)),sp=l.filter(c=>!main.includes(c)&&!gen.includes(c)).concat(lt?[lt]:[]);if(!gen.length&&!sp.length&&!main.length)return[];
+ const out=[carpet(l,y)],add=(cs,ic,title,sub,ext)=>{if(!cs.length)return;out.push({inter:1,ic,title,lines:blk(cs,sub,ext)});cs.forEach(c=>out.push(c))};
+ add(gen,'🎸','Bloque 1 · Categorías de género','Arrancan los premios por género.');
+ add(sp,'🎛️','Bloque 2 · Premios especiales','Llegan los premios especiales de la Academia.');
+ add(main,'👑','Bloque 3 · Las cuatro grandes','Cae el telón: llegan las cuatro grandes de la noche.','🥁 La sala guarda silencio. Todo se decide ahora.');
+ out.push(closing(y));return out}
+function start(mode,y,list,meta){GM.meta=meta||null;GM.mode=mode;GM.blocks=false;let l=list||order(S.noms||[]);if(!list&&mode=='cer'){const lt=window.x22life?window.x22life(y):null;const bl=blocks(l,lt,y);if(bl.length){l=bl;GM.blocks=true}else if(lt)l=l.concat([lt])}if(!l.length)return;GM.mode=mode;GM.y=y;GM.cats=l;GM.i=0;GM.open=true;shell();showCat()}window.gmStart2=start;
 window.gmStart=start;
 const _ex21=ex;ex=function(){_ex21();try{const y=S.ny??yr(S.week);
  if(S.week%52==43&&S.noms&&S.noms.length&&S.gpn!==y){S.gpn=y;start('nom',y)}
