@@ -2302,11 +2302,32 @@ const isArt=c=>/Artista/.test(c)||/^Clase de /.test(c),isLab=c=>c=='Disquera del
 const BIGC=['Álbum del Año','Grabación del Año','Canción del Año','Mejor Artista Nuevo'];
 const sub=t=>'<div class="sub">'+t+'</div>',line=t=>'<div class="m">'+t+'</div>';
 
+/* ---- v54: Espía · saber si un artista rival lanzará álbum o single este año (y que sea verdad) ---- */
+const wkY=(y,w)=>(y-2026)*52+w,hs7=t=>{let h=7;for(const c of String(t))h=(h*31+c.charCodeAt(0))>>>0;return h};
+const spyMo=w=>MN[Math.min(11,Math.floor((w%52)*12/52))];
+const spyCost=(a,y)=>8000000+(hs7('spy'+a.id+'_'+y)%7001)*1000;
+function spyPlan(a,y){const r=wkY(y+1,0)-S.week;let yes=false;
+ if(r>=5){const p=Math.max(.08,Math.min(.92,(.35+(S.week-(a.last==null?-99:a.last))/50+a.pop/250)*Math.min(1,r/18)));yes=R()<p}
+ return{y,aid:a.id,yes,type:R()<.25?'Álbum':'Single',wk:yes?S.week+ri(1,Math.max(1,r-4)):null,done:0,paid:S.week}}
+const spyShort=r=>r.yes?'lanzará un '+r.type+' hacia '+spyMo(r.wk).toLowerCase():'no lanzará ningún álbum ni single este año';
+const spyTxt=(a,r)=>r.yes?'Tu informante confirma que <b>'+e(a.n)+'</b> lanzará un <b>'+r.type+'</b> hacia <b>'+spyMo(r.wk).toLowerCase()+'</b> de '+r.y+'.':'Tu informante confirma que <b>'+e(a.n)+'</b> <b>no lanzará ningún álbum ni single</b> durante '+r.y+'.';
+const spyRow=a=>{const y=yr(S.week),r=(S.spy||{})[a.id+'_'+y];return (r?'<div class="m">🕵️ Informe: '+spyShort(r)+'</div>':'')+'<button style="margin-top:4px;padding:4px 10px;font-size:12px" onclick="event.stopPropagation();x53spy('+a.id+')">🕵️ '+(r?'Ver informe':'Espía · '+fm(spyCost(a,y)))+'</button>'};
+window.x53spy=function(id){const a=S.A[id];if(!a)return;const y=yr(S.week),key=id+'_'+y;S.spy=S.spy||{};const r=S.spy[key];
+ if(r){popup({ic:'🕵️',t:'Informe sobre '+a.n,html:spyTxt(a,r),btns:[{l:'Entendido',p:1}]});return}
+ const cost=spyCost(a,y);
+ popup({ic:'🕵️',t:'Contratar espía',html:'Un informante dentro del entorno de <b>'+e(a.n)+'</b> puede decirte si lanzará un álbum o un single este año. Costo: <b>'+fm(cost)+'</b>. La información es confiable.',btns:[{l:'Contratar · '+fm(cost),p:1,fn:()=>{if(S.L[0].money<cost){alert('Necesitas '+fm(cost)+' para contratar al espía.');return}
+  S.L[0].money-=cost;S.spy[key]=spyPlan(a,y);try{if(typeof save=='function')save()}catch(er){}ui();setTimeout(()=>popup({ic:'🕵️',t:'Informe sobre '+a.n,html:spyTxt(a,S.spy[key]),btns:[{l:'Entendido',p:1}]}),60)}},{l:'Cancelar'}]})};
+/* cumplir el informe: si dijo que sí, lanza; si dijo que no, no lanza */
+function spyTick(){if(!S.spy)return;const W=S.week,cy=yr(W);Object.keys(S.spy).forEach(k=>{const r=S.spy[k];if(!r||r.y!==cy||r.done)return;const a=S.A[r.aid];if(!a||a.ret||a.l==0){if(a&&a.l==0)r.done=1;return}
+ if(r.yes){if(S.S.some(z=>z.a==a.id&&z.type==r.type&&z.wk>=r.paid&&yr(z.wk)==cy)){r.done=1;return}
+  if(W>=r.wk){const mk=a.l!=null&&S.L[a.l]?cl(S.L[a.l].mkt+ri(-10,20)):cl(ri(10,30)+a.pop/4);mkS(a,W+ri(0,1),mk,r.type);r.done=1;news('🕵️ Tu informante acertó: '+a.n+' lanza un '+r.type.toLowerCase()+' nuevo')}}
+ else{a.last=W;a.lastAlb=W}})}
+const _exspy=ex;ex=function(){_exspy();try{spyTick()}catch(er){console.error(er)}};
 window.x33comp=function(){try{const R=rivals();
  let h=line('Los mejores artistas de las disqueras rivales en cada género. Toca uno para ver sus charts, premios y su relación con tus artistas. <b>Poder</b> = popularidad, prestigio, talento y premios.');
  const row=(a,i,nr)=>{const mg=mineG(a.g).map(m=>({m,v:T().aff(m.id,a.id)})).sort((p,q)=>q.v-p.v)[0];
   return '<div style="padding:6px 0;border-top:1px solid var(--b);cursor:pointer" onclick="x33cp('+a.id+')"><b>'+(nr?'':'#'+(i+1)+' ')+e(a.n)+'</b><div class="m">'+e(labN(a))+(isEx(a)?' · 😠 ex tuyo':'')+' · poder '+Math.round(pw(a))+' · pop '+Math.round(a.pop)+' · prestigio '+Math.round(a.prest)+(a.aw?' · 🏆 '+a.aw:'')+'</div>'
-   +(mg?'<div class="m">🤝 '+e(mg.m.n)+': '+AFN(mg.v)+' ('+Math.round(mg.v)+')</div>':'')+'</div>'};
+   +(mg?'<div class="m">🤝 '+e(mg.m.n)+': '+AFN(mg.v)+' ('+Math.round(mg.v)+')</div>':'')+spyRow(a)+'</div>'};
  const exs=R.filter(isEx).sort((p,q)=>pw(q)-pw(p));if(exs.length)h+=dtl('cp_ex','😠 <b>Ex de tu disquera</b> <span class="m">· '+exs.length+' · rivales de tus artistas</span>',line('Artistas a los que les rescindiste el contrato. Su relación con tus artistas arranca muy baja.')+exs.map((a,i)=>row(a,i,1)).join(''),false);
  G.forEach(g=>{const l=R.filter(a=>a.g==g).sort((p,q)=>pw(q)-pw(p)),top=l.slice(0,3),me=mineG(g).sort((p,q)=>pw(q)-pw(p))[0];
   const rk=me?l.filter(a=>pw(a)>pw(me)).length+1:0;
