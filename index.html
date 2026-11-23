@@ -3549,11 +3549,17 @@ const gev=first=>({ph:first?1:3,core:first?1:0,one:1,w:first?4:3,
  mk:(s,a,p)=>({c:gopts(s,a,p)}),
  view(pe,s,a,p){const o=pe.d.c.map(c=>{const b=S.A[c.id],g=GT[c.t],cost=gcost(c.t,b),pr=gprob(a,c.t,b);
    return{l:g.ic+' '+e(b.n),d:g.lab+' · pop '+Math.round(b.pop)+' · '+(cost?fm(cost)+' si acepta':'sin costo')+' · prob. '+(pr>=.7?'alta':pr>=.45?'media':'baja'),need:cost,r:()=>invite(s,a,p,c,b,cost,pr)}});
-  o.push({l:'🎙️ Show en solitario',d:'Sin invitados · ánimo +3',r:()=>{add(p,first?2:0);mood(a,3);return nm(a)+' prefiere llevar todo el peso del show. El plan queda más limpio y con confianza. <b>Ánimo +3</b>.'}});
+  o.push({l:'🔎 Elegir yo al invitado',d:'Tú decides: de tu disquera o de otra',pick:1,r:()=>''});o.push({l:'🎙️ Show en solitario',d:'Sin invitados · ánimo +3',r:()=>{add(p,first?2:0);mood(a,3);return nm(a)+' prefiere llevar todo el peso del show. El plan queda más limpio y con confianza. <b>Ánimo +3</b>.'}});
   return{ic:'🤝',t:first?'¿Quién sube al escenario con '+e(a.n)+'?':'Invitado sorpresa de última hora',
    b:first?'La NFL permite invitados especiales. Tu equipo puede proponer a alguien para compartir escenario con '+nm(a)+'. Cada artista tiene su precio, su agenda y su historia con '+e(a.n)+'.':'Todavía hay un hueco en el repertorio para un cameo secreto. Un nombre inesperado puede incendiar las redes la noche del show.',o}}});
 
 /* ---------- eventos de preparación (ph: fase 1 temprana · 2 media · 3 tardía) ---------- */
+function gtype(b){return b.ret?'legend':b.l===0?'tuyo':b.l!=null?'star':'free'}
+function gall(s,a,p){const tk=new Set(p.g.map(g=>g.id));tk.add(a.id);return S.A.filter(b=>!tk.has(b.id)&&(b.ret?(b.aw>=1||b.prest>=50):(free_(b)&&b.pop>=15&&(b.l==null||b.l===0||labOk(b))))).sort((x,y)=>y.pop-x.pop)}
+window.x38pick=function(){try{const s=cur();if(!s||!s.p||!s.p.pend)return;const p=s.p,a=S.A[s.art],L=gall(s,a,p);
+ const grp=(t,l)=>{const z=L.filter(b=>gtype(b)==t);return z.length?'<optgroup label=\"'+l+'\">'+z.slice(0,150).map(b=>{const c=gcost(t,b),pr=gprob(a,t,b);return '<option value=\"'+b.id+'\">'+e(b.n)+' · pop '+Math.round(b.pop)+' · '+(t=='star'?e(S.L[b.l].n)+' · ':'')+(c?fm(c):'sin costo')+' · '+(pr>=.7?'prob. alta':pr>=.45?'prob. media':'prob. baja')+'</option>'}).join('')+'</optgroup>':''};
+ popup({cls:'gold',ic:'🔎',t:'Elige al invitado de '+e(a.n),html:'<div class=\"m\">Cualquier artista disponible: de tu disquera, de otras, agentes libres o leyendas retiradas. Si acepta, se cobra el costo indicado; si declina, no pagas nada pero baja el ánimo.</div><select id=\"x38sel\" style=\"width:100%;padding:8px;margin-top:8px\">'+grp('tuyo','🎤 Mi disquera')+grp('star','🌟 Otras disqueras')+grp('free','🚀 Agentes libres')+grp('legend','👑 Leyendas retiradas')+'</select>',btns:[{l:'🤝 Invitar',p:1,fn:()=>window.x38pickGo()},{l:'↩ Volver',fn:()=>{showEv(cur())}}]})}catch(er){console.error(er)}};
+window.x38pickGo=function(){try{const s=cur();if(!s||!s.p||!s.p.pend)return;const p=s.p,a=S.A[s.art],sel=document.getElementById('x38sel'),b=sel&&S.A[+sel.value];if(!b)return 'Elige a un artista de la lista.';const t=gtype(b),c={id:b.id,t},cost=gcost(t,b),pr=gprob(a,t,b);if(S.L[0].money<cost)return 'No tienes fondos para cerrar el trato ('+fm(cost)+').';return window.x38do(-1,{l:'🔎 Invitado elegido: '+b.n,need:cost,r:()=>invite(s,a,p,c,b,cost,pr)})}catch(er){console.error(er);return 'No se pudo completar la acción.'}};
 const EV={
 concept:{ph:1,core:1,one:1,w:4,view(pe,s,a,p){const pf=Math.max(.35,Math.min(.8,.5+(a.talent-60)/150));
  return{ic:'🎼',t:'Concepto del show',b:'La NFL espera el concepto creativo de '+nm(a)+' para sus 13 minutos en el escenario. El género ('+e(a.g||'—')+') marca el tono, pero hay varias formas de contarlo.',o:[
@@ -3657,9 +3663,9 @@ const isQ=k=>(PCUR&&PCUR.k38==k)||PQ.some(q=>q.k38==k);
 function showEv(s){const p=s.p,pe=p.pend,d=pe&&EV[pe.k],a=S.A[s.art];if(!d){p.pend=null;return}
  const v=d.view(pe,s,a,p),me=S.L[0];
  popup({cls:'gold',ic:v.ic,t:v.t,k38:pe.k,html:v.b+'<br><br><small>Preparación del show: <b>'+p.sc+'/100</b>'+(d.sw?' · 🏈 Semana del show':'')+'</small>',
-  btns:v.o.map((o,i)=>({l:o.l,d:(o.d||'')+((o.c||o.need)?' · '+(o.c?'cuesta ':'')+fm(o.c||o.need):''),dis:me.money<(o.c||o.need||0),fn:()=>window.x38do(i)}))})}
-window.x38do=function(i){try{const s=cur();if(!s||!s.p||!s.p.pend)return;const p=s.p,pe=p.pend,d=EV[pe.k],a=S.A[s.art];if(!d){p.pend=null;return}
- const v=d.view(pe,s,a,p),o=v.o[i];if(!o)return;
+  btns:v.o.map((o,i)=>({l:o.l,d:(o.d||'')+((o.c||o.need)?' · '+(o.c?'cuesta ':'')+fm(o.c||o.need):''),dis:me.money<(o.c||o.need||0),fn:()=>o.pick?window.x38pick():window.x38do(i)}))})}
+window.x38do=function(i,ov){try{const s=cur();if(!s||!s.p||!s.p.pend)return;const p=s.p,pe=p.pend,d=EV[pe.k],a=S.A[s.art];if(!d){p.pend=null;return}
+ const v=d.view(pe,s,a,p),o=ov||v.o[i];if(!o)return;
  if(o.c){if(S.L[0].money<o.c)return 'No tienes fondos suficientes.';S.L[0].money-=o.c;p.spent+=o.c}
  const html=o.r()||'';p.pend=null;if(d.one)p.used.push(pe.k);
  p.log.push({k:pe.k,t:v.t.replace(/<[^>]+>/g,''),o:strip(o.l)});
@@ -4553,11 +4559,11 @@ const css=document.createElement('style');css.textContent=`.gs-mast{text-align:c
 const CPL={rumor:['👀','rumor'],dating:['💑','en pareja'],engaged:['💍','comprometidos'],married:['👰','casados'],split:['💔','terminaron']};
 V.Chisme=function(){const g=GS();g.seen=g.id;const f=window.GOSF||'all',arts=g.a.filter(a=>f!='me'||a.me);
  const chip=(k,l)=>'<button class="gs-chip'+(f==k?' on':'')+'" onclick="window.GOSF=\''+k+'\';ui()">'+l+'</button>';
- const cps=Object.values(g.cp).filter(c=>CPL[c.st]&&S.A[c.a]&&S.A[c.b]&&(c.st!='split'||S.week-c.w<26)).sort((p,q)=>q.w-p.w).slice(0,8);
+ const cps=Object.values(g.cp).filter(c=>CPL[c.st]&&S.A[c.a]&&S.A[c.b]&&(c.st!='split'||S.week-c.w<26)).sort((p,q)=>((S.A[q.a].l===0||S.A[q.b].l===0)-(S.A[p.a].l===0||S.A[p.b].l===0))||q.w-p.w).slice(0,8);
  const ap=Object.keys(g.ap).sort().reverse().slice(0,2).map(y=>'<div class="gs-ap"><h3>🥂 After party oficial · Grammys '+y+'</h3>'+g.ap[y].items.map(z=>'<div class="gs-a'+(z.me?' me':'')+'"><b>'+e(z.t)+'</b><p>'+e(z.x)+'</p></div>').join('')+'</div>').join('');
  return '<div class="card"><div class="gs-mast"><b>CHISMELIGHT</b><span>TODO LO QUE NO DEBÍAS SABER</span></div><div class="gs-chips">'+chip('all','Todo')+chip('me','⭐ Tu disquera')+'</div>'+
  (arts.length?arts.slice(0,1).map(a=>'<div class="gs-a gs-cover'+(a.me?' me':'')+'"><div class="gs-k">'+KL[a.k]+' · '+wl(a.w)+(a.me?' · ⭐ Tu disquera':'')+'</div><b>'+e(a.t)+'</b><p>'+e(a.x)+'</p></div>').join(''):'<span class="m">Todavía no hay chismes'+(f=='me'?' de tu disquera':'')+'. Avanza unas semanas y Chismelight se pondrá al día.</span>')+'</div>'+
- ap+(cps.length?'<div class="card"><h3>💘 Parejas del momento</h3>'+cps.map(c=>'<div class="gs-cp">'+CPL[c.st][0]+' <b>'+e(S.A[c.a].n)+'</b> + <b>'+e(S.A[c.b].n)+'</b> <span class="m">· '+CPL[c.st][1]+' · '+wl(c.w)+'</span></div>').join('')+'</div>':'')+
+ ap+(cps.length?'<div class="card"><h3>💘 Parejas del momento</h3>'+cps.map(c=>'<div class="gs-cp">'+CPL[c.st][0]+' <b>'+e(S.A[c.a].n)+'</b> + <b>'+e(S.A[c.b].n)+'</b> <span class="m">· '+CPL[c.st][1]+' · '+wl(c.w)+'</span>'+(['dating','engaged','married'].includes(c.st)&&(S.A[c.a].l===0||S.A[c.b].l===0)?' <button class=\"gs-chip\" style=\"padding:3px 9px\" onclick=\"gosBreak(\''+ck(c.a,c.b)+'\')\">💔 Terminar</button>':'')+'</div>').join('')+'</div>':'')+
  (arts.length>1?'<div class="card"><h3>🗞️ Últimos chismes</h3>'+arts.slice(1,31).map(a=>'<div class="gs-a'+(a.me?' me':'')+'"><div class="gs-k">'+KL[a.k]+' · '+wl(a.w)+(a.me?' · ⭐ Tu disquera':'')+'</div><b>'+e(a.t)+'</b><p>'+e(a.x)+'</p></div>').join('')+'</div>':'')};
 const _uiG=ui;ui=function(){_uiG();try{const n=$('n');if(n&&S&&!n.querySelector('[data-gos]')){const g=GS(),b=document.createElement('button');b.dataset.gos=1;b.textContent='💋 Chisme'+(g.id>g.seen?' •':'');b.className=tab=='Chisme'?'on':'';b.onclick=()=>{tab='Chisme';ui()};const nt=[...n.children].find(z=>z.textContent=='Publicaciones')||[...n.children].find(z=>z.textContent=='Noticias');n.insertBefore(b,nt?nt.nextSibling:null)}}catch(er){console.error(er)}};
 /* ---- Presentar a alguien ---- */
@@ -4586,6 +4592,14 @@ function presentCard(){const g=GS(),mine=mineA();if(!mine.length)return '';const
  return '<div class="card gos-pr"><h3>🤝 Presentar a alguien</h3><div class="m">Preséntale a uno de tus artistas a otro artista, de tu disquera o de otra, para que empiecen a salir.</div><label>Tu artista</label>'+sel('a',oA,'Elige a tu artista…','gosPA')+(A?'<label>Presentarle a</label>'+sel('b',oB,'Elige a quién presentarle…','gosPB'):'')+pv+'<button class="p" style="width:100%"'+(A&&B&&!whyNot(A,B)?'':' disabled')+' onclick="gosPresent()">🤝 Presentar</button></div>'+
  (rec.length?'<div class="card"><h3>📱 Reacciones de los fans</h3><div class="m">Los chismes más importantes tienen publicaciones y reacciones en Publicaciones.</div>'+rec.map(a=>{const A2=S.A[a.a[0]],B2=S.A[a.a[1]];if(!A2||!B2)return '';const tp=X().tpOf(a),tg=X().ROM.includes(tp)?'#'+X().fst(A2)+X().fst(B2):'#'+X().fst(A2)+'Vs'+X().fst(B2);return '<div class="gs-cp">'+(X().TPM[tp]||X().TPM.ro)[0]+' <b>'+e(A2.n)+'</b> + <b>'+e(B2.n)+'</b> <button class="gs-chip" style="padding:3px 9px" onclick="trGo48(\''+tg+'\')">Ver reacciones</button></div>'}).join('')+'</div>':'')}
 const _VCg=V.Chisme;V.Chisme=function(){return _VCg()+presentCard()};
+
+/* ---- Terminar con la pareja actual (decisión tuya) ---- */
+window.gosBreak=function(k){const g=GS(),c=g.cp[k];if(!c||!['dating','engaged','married'].includes(c.st))return;const A=S.A[c.a],B=S.A[c.b];if(!A||!B)return;const mar=c.st=='married';
+ popup({ic:'💔',t:mar?'Divorcio':'Terminar la relación',html:'¿Seguro que quieres que <b>'+e(A.n)+'</b> y <b>'+e(B.n)+'</b> '+(mar?'se divorcien':'terminen su relación')+'? Chismelight lo publicará, los fans reaccionarán y los dos bajarán de ánimo.'+(A.l!==0||B.l!==0?' La otra parte quedará resentida contigo.':''),btns:[{l:mar?'Sí, divorciarse':'Sí, terminar',p:1,fn:()=>window.gosBreakDo(k)},{l:'Cancelar'}]})};
+window.gosBreakDo=function(k){try{const g=GS(),c=g.cp[k];if(!c||!['dating','engaged','married'].includes(c.st))return;const A=S.A[c.a],B=S.A[c.b];if(!A||!B)return;const mar=c.st=='married';
+ c.st='split';c.w=S.week;g.pt[k]=S.week;[A,B].forEach(z=>{if(z.mood!=null)z.mood=Math.max(0,z.mood-8)});try{window.x22t.setAff(A.id,B.id,af(A.id,B.id)-12)}catch(_){}
+ art('bk',mar?DIV:SPL,[c.a,c.b],'brk'+k+S.week);news('💔 '+A.n+' y '+B.n+' terminan su relación');try{X().flush()}catch(_){}save();ui();
+ return '💔 <b>'+e(A.n)+'</b> y <b>'+e(B.n)+'</b> '+(mar?'se divorciaron':'terminaron')+'. Chismelight ya lo publicó y los fans están reaccionando en Publicaciones. Ánimo −8 y afinidad −12 entre ellos.'}catch(er){console.error(er);return 'No se pudo completar la acción.'}};
 })();
 const _exG=ex;ex=function(){_exG();try{tick();(()=>{const g=GS();g.apx=g.apx||{};Object.keys(g.ap).forEach(k=>{if(S.week-g.ap[k].w>8){delete g.ap[k];g.apx[k]=1}})})();window.gosX&&window.gosX.flush()}catch(er){console.error(er)}};
 })();
