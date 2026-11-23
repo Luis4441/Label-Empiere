@@ -3495,6 +3495,29 @@ function xwPosts(){const g=GS(),x=g.xw,Wd=(typeof POSTW48=='number'?POSTW48:2),o
  return out}
 const _xwAw=awardPosts;awardPosts=function(){const o=_xwAw();try{xwPosts().forEach(p=>o.push(p))}catch(er){console.error(er)}return o};
 
+/* ---- Perfil de artista: publicaciones de «Apoyar» y «Mejorar relación» ---- */
+const SPA=['🎧 Si no han escuchado «{SONG}» de {Th}, ¿qué esperan? Merece estar en lo más alto de los charts 🔥','Hoy toca apoyar a quien lo merece: «{SONG}» de {Th} 💜 Denle play y compártanla 🚀','No exagero: «{SONG}» de {Th} es de lo mejor del año. A streamear se ha dicho 🎶🔥','Respeto total a {Th}. «{SONG}» tiene que sonar en todas partes 📈🎧'];
+const SPL=['Orgullosos de apoyar a {Th}: «{SONG}» merece subir en los charts. ¡A darle play! 🎧📈','Todo el apoyo de {LAB} para {Th} y «{SONG}» 🚀 ¡Súbanla al #1!'];
+const SPR=['Gracias por el apoyo, {Sh} 🥹💜','No tengo palabras, {Sh}. Gracias de verdad 🙏🔥','Esto significa muchísimo, {Sh} 💛'];
+const SPF=['Ya la puse en bucle 🎧🔥','Que llegue al #1, lo merece 🥇','Gracias por el aviso, voy a darle play 🙌','Apoyo así es lo que necesita la industria 💜'];
+const FRA=['Cena, risas y música con {Th} 🍽️🎶 Qué bonito es encontrar buena gente en esta industria 💛','Hoy descubrí que {Th} es de los míos. Amistad nueva desbloqueada 🤝✨','Un día en el estudio con {Th} y salimos como amigos 🎙️💛'];
+const FRR=['Mi mejor momento de la semana, {Sh} 💛','Amigos para siempre 🤝🔥','Cuando quieras repetimos 🥹'];
+const FRF=['Qué bonito ver amistades así en la industria 🥹','Colaboración ya, por favor 🙏🎶','Esto es lo que necesitamos: menos drama y más música 💛','Amigos que se apoyan en los charts, ¡eso es! 📈'];
+function spPosts(){const g=GS(),sp=g.sp,Wd=(typeof POSTW48=='number'?POSTW48:2),out=[];if(!sp||!sp.list)return out;
+ sp.list.forEach(r=>{if(r.w>S.week||S.week-r.w>Wd)return;const T=S.A[r.to],B=r.by!=null?S.A[r.by]:null;if(!T)return;
+  const k='sp'+r.id,ft=first(T),m={T:T.n,Th:hdq(T.n),SN:B?B.n:S.name,Sh:B?hdq(B.n):hdq(S.name),SONG:r.st||'su nueva canción',LAB:S.name};
+  if(r.k=='sp'){
+   const cm=fcm(SPF,k+'c',2,m);cm.push({u:hdq(T.n),artist:1,re:m.Sh,go:'x33cp('+T.id+')',t:fill(pk(SPR,k+'r'),m)});
+   if(B)out.push({kind:'gos',sub:'art',w:r.w,mine:1,who:B,tx:fill(pk(SPA,k+'a'),m)+' #'+ft+' #Apoyo',lk:lkf(22000+(B.pop||0)*7000,k+'a'),cm});
+   else out.push({kind:'l',l:0,w:r.w,bo:0,tx:fill(pk(SPL,k+'l'),m)+' #'+ft,lk:lkf(15000+((S.L[0]&&S.L[0].prest)||0)*3500,k+'l'),cm});
+   out.push({kind:'gos',sub:'fan',w:r.w,mine:1,who:T,tx:'🚀 Los fans de '+T.n+' se movilizan tras el apoyo de '+m.SN+': ¡a streamear «'+m.SONG+'»! #'+ft,lk:lkf(9000+(T.pop||0)*2600,k+'f'),cm:fcm(SPF,k+'fc',3,m)})}
+  else if(B){const fb=first(B),tag='#'+fb+ft;
+   out.push({kind:'gos',sub:'art',w:r.w,mine:1,who:B,tx:fill(pk(FRA,k+'a'),m)+' '+tag,lk:lkf(21000+(B.pop||0)*6500,k+'a'),cm:fcm(FRF,k+'c',2,m).concat([{u:hdq(T.n),artist:1,re:m.Sh,go:'x33cp('+T.id+')',t:fill(pk(FRR,k+'r'),m)}])});
+   if(r.fr)out.push({kind:'gos',sub:'pub',w:r.w,mine:1,tx:'🤝 '+B.n+' y '+T.n+' ya son amigos. ¡Los fans piden colaboración! 🎶 '+tag,lk:lkf(14000+((B.pop||0)+(T.pop||0))*1500,k+'p'),cm:fcm(FRF,k+'pc',3,m)})}
+ });
+ return out}
+const _spAw=awardPosts;awardPosts=function(){const o=_spAw();try{spPosts().forEach(p=>o.push(p))}catch(er){console.error(er)}return o};
+
 window.gosX={tpOf,important,TPM,ROM,fst:first,flush:()=>{FC={k:'',v:null}}};
 const css2=document.createElement('style');css2.textContent=`.gos-img{border:1px solid #ff5fa255;border-radius:14px;margin:8px 0;padding:14px 10px;text-align:center;color:#fff;background:radial-gradient(circle at 50% 0%,#ff5fa255,transparent 60%),linear-gradient(160deg,#2a0f1d,#15151f 70%)}.gos-img small{display:block;font-size:10px;letter-spacing:.2em;color:#ff8fc2;font-weight:700;margin-bottom:8px}.gos-faces{display:flex;align-items:center;justify-content:center;gap:10px}.gos-faces>b{font-size:26px}.gos-av{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;font-style:normal;border:2px solid #ffffff33}.gos-n{font-family:Georgia,serif;font-size:15px;margin-top:8px}.gos-s{font-size:12px;color:#ff8fc2;letter-spacing:.08em;margin-top:2px}.gos-p{border-left:3px solid #ff5fa2}.gos-pr select{width:100%;margin:4px 0 8px;padding:8px;border-radius:10px;background:#1d1a2e;border:1px solid #ff5fa255;color:var(--t,#fff)}.gos-pr label{display:block;font-size:12px;color:var(--m);margin-top:6px}.gos-ch{font-size:13px;margin:6px 0 10px;line-height:1.5}`;document.head.appendChild(css2);
 })();
@@ -4874,6 +4897,55 @@ window.gosAwTick=function(){try{const x=XW(),X2=window.X22?window.X22():null,evs
  if(X2&&X2.gal)Object.keys(X2.gal).forEach(z=>{const m=/^(bbma|vma)(\d+)$/.exec(z);if(m)evs.push({key:z,ev:m[1],y:+m[2],wk:(+m[2]-2026)*52+(m[1]=='bbma'?20:36),L:X2.gal[z]||[]})});
  evs.forEach(Ev=>{if(x.done[Ev.key]||Ev.wk>S.week)return;x.done[Ev.key]=1;if(S.week-Ev.wk>1)return;xwEvent(Ev)});
  xwStages()}catch(er){console.error(er)}};
+})();
+
+/* ---- Perfil de artista: botones «Apoyar» (impulso en charts) y «Mejorar relación» (amistad) ---- */
+(()=>{
+const SP=()=>{const g=GS(),s=g.sp=g.sp||{};s.list=s.list||[];s.id=s.id||0;s.c=s.c||{};s.t=s.t||{};return s},
+ COST_SP=5000,COST_FR=8000,
+ mineA=id=>S.A.filter(a=>a.l===0&&!a.ret&&a.deb!=null&&a.id!=id),
+ setA=(p,q,v)=>{try{window.x22t.setAff(p,q,Math.max(0,Math.min(100,v)))}catch(_){}},
+ flush=()=>{try{window.gosX&&window.gosX.flush()}catch(_){}},
+ selOf=a=>{const ms=mineA(a.id);let s=window.XSPSEL;if(!ms.some(z=>z.id==s)&&!(s==='L'&&a.l===0))s=ms.length?ms[0].id:(a.l===0?'L':null);return s},
+ songsOf=T=>{const sg=S.S.filter(z=>z.a==T.id&&!z.bx),ch=sg.filter(z=>z.pos&&z.wk<=S.week&&S.week-z.wk<52).sort((p,q)=>p.pos-q.pos),rc=sg.filter(z=>!ch.includes(z)&&z.wk>=S.week-6&&z.wk<=S.week+4).sort((p,q)=>q.wk-p.wk);return ch.concat(rc).slice(0,2)};
+const st=document.createElement('style');st.textContent='.xsp{margin:8px 0;padding:10px;border:1px solid var(--b,#2a2a38);border-radius:12px}.xsp .m{font-size:12px}.xsp select{max-width:100%}.xsp .ap-ac{margin-top:6px}';document.head.appendChild(st);
+function ui2(a){const ms=mineA(a.id),mine=a.l===0;
+ if(!ms.length&&!mine)return '<div class="xsp"><span class="m">💡 Para apoyar o mejorar la relación con '+e(a.n)+' necesitas al menos un artista en tu disquera.</span></div>';
+ const sel=selOf(a),opts=ms.map(z=>'<option value="'+z.id+'"'+(z.id==sel?' selected':'')+'>'+e(z.n)+' · '+e(z.g)+'</option>').join('')+(mine?'<option value="L"'+(sel==='L'?' selected':'')+'>🏢 '+e(S.name)+' (disquera)</option>':'');
+ return '<div class="xsp"><div class="m" style="margin-bottom:6px">🤝 Acciones con <b>'+e(a.n)+'</b></div><div class="row"><span class="m">Desde:</span><select onchange="window.XSPSEL=this.value">'+opts+'</select></div>'
+  +'<button class="ap-ac" onclick="xspGo(\'sp\','+a.id+')"><b>📣 Apoyar</b><small>'+fm(COST_SP)+' · publicación de apoyo + impulso en los charts</small></button>'
+  +'<button class="ap-ac" onclick="xspGo(\'fr\','+a.id+')"><b>🤝 Mejorar relación</b><small>'+fm(COST_FR)+' · afinidad +20 · los vuelve amigos (55+)</small></button></div>'}
+const _apF=window.apFollowH;
+window.apFollowH=function(a){let h='';try{h=_apF?_apF(a):''}catch(_){}try{return h+ui2(a)}catch(er){console.error(er);return h}};
+function doIt(kind,id){const T=S.A[id];if(!T)return 'No se pudo completar la acción.';const s=SP(),L0=S.L[0],sel=selOf(T);if(sel==null)return 'Necesitas un artista en tu disquera para hacer esto.';
+ const B=sel==='L'?null:S.A[+sel];
+ if(kind=='sp'){const key='sp'+(B?B.id:'L')+'_'+id,cdP=(s.c[key]||0)-S.week,cdT=(s.t[id]||0)-S.week;
+  if(cdP>0)return 'Ya apoyaste a '+e(T.n)+' desde ahí hace poco. Podrás repetirlo en '+cdP+' semana(s).';
+  if(cdT>0)return e(T.n)+' ya recibió un apoyo reciente y su impulso sigue en marcha. Espera '+cdT+' semana(s).';
+  if(L0.money<COST_SP)return 'Cuesta '+fm(COST_SP)+' y no tienes ese dinero.';
+  const songs=songsOf(T);if(!songs.length)return e(T.n)+' no tiene canciones en el chart ni lanzamientos recientes que apoyar.';
+  L0.money-=COST_SP;const g=B?Math.max(.18,Math.min(.6,.18+(B.pop||0)/220)):.25;
+  songs.forEach(z=>{z.viral=Math.min(5,+((z.viral||0)+g).toFixed(2));z.mkt=Math.min(120,(z.mkt||0)+3)});
+  if(B)setA(B.id,T.id,af(B.id,T.id)+2);T.fans=cl(T.fans+1);s.c[key]=S.week+4;s.t[id]=S.week+3;
+  s.list.push({id:++s.id,k:'sp',w:S.week,by:B?B.id:null,to:T.id,st:songs[0].t});if(s.list.length>40)s.list=s.list.slice(-40);
+  news('📣 '+(B?B.n:S.name)+' apoya públicamente a '+T.n+' con «'+songs[0].t+'»');flush();save();ui();
+  return '📣 <b>'+e(B?B.n:S.name)+'</b> publicó su apoyo a <b>'+e(T.n)+'</b>. Impulso en charts <b>+'+g.toFixed(2)+'</b> para '+songs.map(z=>'«'+e(z.t)+'»').join(' y ')+'.'+(B?' Afinidad +2.':'')+' Costo: '+fm(COST_SP)+'. La publicación ya está en Publicaciones.'}
+ if(kind=='fr'){if(!B||B.l!==0)return 'Elige uno de tus artistas (no la disquera) para mejorar la relación.';
+  const a0=af(B.id,T.id),key='fr'+(B.id<T.id?B.id+'_'+T.id:T.id+'_'+B.id),cd=(s.c[key]||0)-S.week;
+  if(cd>0)return 'Ya intentaron acercarse hace poco. Podrán repetirlo en '+cd+' semana(s).';
+  if(a0>=75)return 'Ya son mejores amigos (afinidad '+Math.round(a0)+'). No hace falta más.';
+  if(a0<25)return e(T.n)+' no quiere ni verle la cara a '+e(B.n)+' (afinidad '+Math.round(a0)+', hace falta 25). Prueba primero «Hacer las paces» en la pestaña Relaciones.';
+  if(L0.money<COST_FR)return 'Cuesta '+fm(COST_FR)+' y no tienes ese dinero.';
+  L0.money-=COST_FR;const was=a0>=55,nv=Math.min(100,Math.max(a0+20,a0>=40?55:0)),fr=!was&&nv>=55;setA(B.id,T.id,nv);
+  [B,T].forEach(z=>{if(z.mood!=null)z.mood=Math.min(100,z.mood+3)});s.c[key]=S.week+5;
+  s.list.push({id:++s.id,k:'fr',w:S.week,by:B.id,to:T.id,fr:fr?1:0});if(s.list.length>40)s.list=s.list.slice(-40);
+  if(fr){const ar=add('ex',B.n+' y '+T.n+' se hacen amigos','Después de una cena y una tarde en el estudio, '+B.n+' y '+T.n+' dejaron de ser «colegas». Los fans ya piden una colaboración.',[B.id,T.id]);ar.tp='fr';news('🤝 '+B.n+' y '+T.n+' se hacen amigos')}
+  else news('🤝 '+B.n+' y '+T.n+' se acercan');flush();save();ui();
+  return fr?'🤝 <b>'+e(B.n)+'</b> y <b>'+e(T.n)+'</b> ya son <b>amigos</b> (afinidad '+Math.round(nv)+'). Ánimo +3 para ambos. Costo: '+fm(COST_FR)+'.':'🤝 Se llevaron muy bien: afinidad '+Math.round(a0)+' → <b>'+Math.round(nv)+'</b>. Aún no son amigos (hacen falta 55); pueden repetirlo en 5 semanas. Costo: '+fm(COST_FR)+'.'}
+ return ''}
+window.xspGo=function(kind,id){let r;try{r=doIt(kind,id)}catch(er){console.error(er);r='No se pudo completar la acción.'}
+ popup({ic:kind=='sp'?'📣':'🤝',t:kind=='sp'?'Apoyar':'Mejorar relación',html:r,btns:[{l:'Continuar',p:1}]});
+ setTimeout(()=>{try{if(document.getElementById('ap-m')&&window.x33cp)x33cp(id)}catch(_){}},60)};
 })();
 
 const _exG=ex;ex=function(){_exG();try{tick();window.gosAwTick&&window.gosAwTick();window.gosBackTick&&window.gosBackTick();window.gosReasonTick&&window.gosReasonTick();(()=>{const g=GS();g.apx=g.apx||{};Object.keys(g.ap).forEach(k=>{if(S.week-g.ap[k].w>8){delete g.ap[k];g.apx[k]=1}})})();window.gosX&&window.gosX.flush()}catch(er){console.error(er)}};
