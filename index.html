@@ -4951,6 +4951,55 @@ window.xspGo=function(kind,id){let r;try{r=doIt(kind,id)}catch(er){console.error
 const _exG=ex;ex=function(){_exG();try{tick();window.gosAwTick&&window.gosAwTick();window.gosBackTick&&window.gosBackTick();window.gosReasonTick&&window.gosReasonTick();(()=>{const g=GS();g.apx=g.apx||{};Object.keys(g.ap).forEach(k=>{if(S.week-g.ap[k].w>8){delete g.ap[k];g.apx[k]=1}})})();window.gosX&&window.gosX.flush()}catch(er){console.error(er)}};
 })();
 
+/* ---- Mejores amigos: apoyo constante (comentarios, respuestas y publicaciones de apoyo) ---- */
+(()=>{
+const hs=x=>{let h=7;for(const c of String(x))h=(h*31+c.charCodeAt(0))>>>0;return h};
+const hd=n=>'@'+(String(n).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'')||'user');
+const fst=n=>String(n).split(' ')[0].replace(/[^\p{L}\p{N}]/gu,'');
+const pk=(a,k)=>a[hs(k)%a.length];
+const fl=(s,m)=>String(s).replace(/\{(\w+)\}/g,(_,x)=>m[x]!=null?m[x]:'');
+const af=(a,b)=>{try{const T=window.x22t;return T&&T.aff?T.aff(a,b):0}catch(_){return 0}};
+const BC=['Siempre supe que lo ibas a lograr, {Th} 💛','Todo mi apoyo, siempre. Lo sabes 🤝🔥','Ya lo vi tres veces y sigo sin palabras 🥹💛','No hay nadie como tú en esta industria 🫶','Aquí estoy, como siempre: comentando primero 😌💛','Te quiero mucho, {Th}. Esto es solo el comienzo 🚀','Que alguien me explique cómo haces esto tan bien 😭👏','Le voy a decir a todo el mundo que vean esto 📣💛','Mejores amigos para siempre, y se nota 🤝💛','Me alegras el día cada vez que publicas 🥹','Esto merece ser tendencia ya 📈🔥','Qué orgullo tenerte cerca, de verdad 💛','Te lo mereces todo, {Th} 🙌💛','Eres lo máximo. Punto. 🔥'];
+const BR=['Gracias por estar siempre ahí, {Sh} 💛','Tú siempre apoyándome, no sé qué haría sin ti 🥹','Te quiero, {Sh} 🫶','Ya sabes que yo haría lo mismo por ti 💛','Eres el mejor apoyo, {Sh} 🤝🔥','Contigo todo se siente más fácil, {Sh} 🥹'];
+const BB=['Jajaja exacto, {Sh} 💛','Eso mismo iba a decir 🤝','Somos un club, {Sh} 😂💛'];
+const BP=['🎧 Si todavía no escucharon «{SONG}» de {Th}, ¿qué esperan? Es mi mejor amigo en esta industria y se lo merece todo 💛🔥','Orgullosísimo de {Th} y de «{SONG}». Denle play y compártanla 🚀💛','No es exagerar porque lo quiero: «{SONG}» de {Th} es de lo mejor del año 🎶🥹','Mi apoyo incondicional para {Th} y «{SONG}». Los mejores amigos se cuidan los charts 📈🤝'];
+const FU=['luna','sofi','dani','caro','migue','vale','andy','nico','juli','sami'];
+const FT=['Qué bonita amistad 🥹💛','Estos dos se quieren muchísimo 😭','Amistades así necesitamos en la industria 🙌','Colaboración ya, por favor 🙏🎶','Se nota que se adoran 💛'];
+const fu=(k,i)=>'@'+FU[hs(k+'u'+i)%FU.length]+(hs(k+'#'+i)%90+10);
+const bests=(a,cache)=>{if(cache[a.id])return cache[a.id];
+ return cache[a.id]=S.A.filter(b=>b&&b.id!=a.id&&b.deb!=null&&!b.ret&&af(a.id,b.id)>=75).sort((p,q)=>af(a.id,q.id)-af(a.id,p.id)||hs(a.id+'_'+p.id)-hs(a.id+'_'+q.id))};
+const done=new WeakSet();
+const _afd=allFeed;
+allFeed=function(){const out=_afd();if(!Array.isArray(out)||done.has(out))return out;done.add(out);
+ try{
+  const cache={},extra=[];
+  out.forEach(it=>{
+   let a=null,tg=null;
+   if(it.kind=='a'&&it.p&&it.p.ty!='idle'&&it.a){a=it.a;tg=it.p}
+   else if(it.kind=='gos'&&it.sub=='art'&&it.who&&it.who.id!=null&&S.A[it.who.id]){a=it.who;tg=it}
+   if(!a||!tg||!Array.isArray(tg.cm))return;
+   const bf=bests(a,cache).slice(0,4);if(!bf.length)return;
+   const k='bf'+a.id+'|'+it.w+'|'+(tg.tx||''),Th=hd(a.n),add=[];
+   bf.forEach((b,i)=>{const bh=hd(b.n);if(tg.cm.some(c=>c.u==bh))return;
+    add.push({u:bh,artist:1,go:'x33cp('+b.id+')',t:fl(pk(BC,k+'c'+b.id),{Th})});
+    if(i==0)add.push({u:Th,artist:1,re:bh,go:'x33cp('+a.id+')',t:fl(pk(BR,k+'r'+b.id),{Sh:bh})});
+    else if(i==1)add.push({u:bh,artist:1,re:hd(bf[0].n),go:'x33cp('+b.id+')',t:fl(pk(BB,k+'b'+b.id),{Sh:hd(bf[0].n)})})});
+   if(add.length)tg.cm.splice(0,0,...add);
+  });
+  const lo=S.week-(typeof POSTW48=='number'?POSTW48:2);let n=0;
+  S.A.forEach(a=>{if(!a||a.deb==null||a.ret||n>=60)return;
+   const sg=S.S.filter(s=>s.a==a.id&&s.wk<=S.week&&s.wk>=lo).sort((p,q)=>q.wk-p.wk).slice(0,2);if(!sg.length)return;
+   const bf=bests(a,cache).slice(0,2);
+   sg.forEach(s=>bf.forEach(b=>{if(n>=60)return;n++;
+    const k='bfp'+a.id+'_'+b.id+'_'+s.id,Th=hd(a.n),Sh=hd(b.n),m={Th,Sh,SONG:s.t||'su nueva canción'},w=Math.min(S.week,s.wk+hs(k)%2);
+    extra.push({kind:'gos',sub:'art',w,mine:(a.l==0||b.l==0)?1:0,who:b,tx:fl(pk(BP,k),m)+' #'+fst(a.n)+' #MejoresAmigos',lk:Math.round((22000+(b.pop||0)*7000)*(.8+hs(k)%40/100)),
+     cm:[{u:Th,artist:1,re:Sh,go:'x33cp('+a.id+')',t:fl(pk(BR,k+'r'),m)},{fan:1,u:fu(k,0),t:pk(FT,k+'f0')},{fan:1,u:fu(k,1),t:pk(FT,k+'f1')}]})}));
+  });
+  extra.forEach(p=>out.push(p));
+ }catch(er){console.error(er)}
+ return out};
+})();
+
 if(load())ui();else{newGame(
 Math.floor(Math.random()*1e6),'Mi Disquera');ui()}
 </script></body></html>
