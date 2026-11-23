@@ -3466,6 +3466,35 @@ function reactPosts(){const g=GS(),W=(typeof POSTW48=='number'?POSTW48:2),out=[]
  return out}
 const _rxAw=awardPosts;awardPosts=function(){const o=_rxAw();try{reactPosts().forEach(p=>o.push(p))}catch(er){console.error(er)}return o};
 
+/* ---- Premios: indirecta del ex, respuesta del ganador, pareja del ex (signos de interrogación) e investigación de Chismelight ---- */
+const XWFB=['Esa felicitación tiene más capas que una cebolla 🧅👀','Leí el mensaje de {E} tres veces y sigo sin saber si era cariño o indirecta 😭','{E} felicitando a {W}… ¿es redención o es veneno? 🍿','Que alguien traduzca ese mensaje, por favor 🙏😂','Team {W}: los premios no se ganan solos 🏆','Team {E}: dijo lo que sentía y punto 💅'];
+const XWPB=['Los «???» de {P} dicen más que mil palabras 🤨','{P} merece una explicación 👀','Pobre {P}, siempre en medio 😭'];
+const XWRB=['Esto es mejor que una telenovela 🍿','Yo solo vine por los comentarios 😂','Se pelean con clase… o eso intentan 🙃'];
+const XWSH=['Mi corazón sigue en {S} 😭','{S} nunca se fue de mi playlist 🎶💔','Si esto no es una señal de que volverán, no sé qué es 👀'];
+const XWI1=['Fuentes cercanas ya hablan, y hablan mucho 👀','Que investiguen, que yo traigo las palomitas 🍿','{P} y {E}, ¿todo bien? 🥺'];
+const XWC=['Sin pelea no hay chisme 😅 qué decepción','Qué bueno que estén bien, los fans somos muy dramáticos 🙈','Entonces era un malentendido… ¡respiro! 😮‍💨'];
+const XWF2=['Se veía venir 😞','Qué mal que el chisme tuviera razón 💔','Fuerza a los dos, estas cosas duelen 🫂'];
+function xwPosts(){const g=GS(),x=g.xw,Wd=(typeof POSTW48=='number'?POSTW48:2),out=[];if(!x||!x.list)return out;const inW=w=>w!=null&&w<=S.week&&S.week-w<=Wd;
+ x.list.forEach(r=>{const E=S.A[r.e],V=S.A[r.wn],P=r.pt!=null?S.A[r.pt]:null,WP=r.wp!=null?S.A[r.wp]:null;if(!E||!V)return;
+  const k='xw'+r.id,fe=first(E),fv=first(V),tag='#'+fe+fv,mine=r.me?1:0,m={E:E.n,W:V.n,P:P?P.n:'',Eh:hdq(E.n),Wh:hdq(V.n),Ph:P?hdq(P.n):'',S:fe+fv},pa=((E.pop||0)+(V.pop||0))/2,tg=r.tg||'',pt=P?' '+hdq(P.n):'';
+  if(inW(r.w)){
+   out.push({kind:'gos',sub:'media',w:r.w,mine,html:gcard(E,V,'bf','🥊 '+tag,'INDIRECTA POR EL PREMIO'),tx:'💋 '+r.m0+' #Chismelight '+tag+' '+hdq(E.n)+' '+hdq(V.n)+pt,lk:lkf(40000+pa*11000,k+'m'),cm:fcm(P?XWFB.concat(XWPB):XWFB,k+'mc',3,m)});
+   const ec=fcm(XWFB,k+'ec',2,m);if(P&&r.pc){ec.push({u:hdq(P.n),artist:1,go:'x33cp('+P.id+')',t:r.pc});if(r.er)ec.push({u:hdq(E.n),artist:1,re:hdq(P.n),go:'x33cp('+E.id+')',t:r.er})}
+   out.push({kind:'gos',sub:'art',w:r.w,mine,who:E,tx:r.t+' '+tg+' '+tag,lk:lkf(30000+(E.pop||0)*9000,k+'e'),cm:ec});
+   if(P&&r.pq)out.push({kind:'gos',sub:'art',w:r.w,mine,who:P,tx:r.pq+' '+tag,lk:lkf(18000+(P.pop||0)*6000,k+'pq'),cm:fcm(XWPB.concat(XWRB),k+'pqc',3,m)});
+   out.push({kind:'gos',sub:'fan',w:r.w,mine,who:E,tx:fill(pk(XWFB,k+'f'),m)+' '+tag,lk:lkf(7000+(E.pop||0)*2100,k+'f'),cm:fcm(XWFB,k+'fc',3,m)});
+   if(r.tone=='bk')out.push({kind:'gos',sub:'ship',w:r.w,mine,ship:fe+fv,tx:fill(pk(XWSH,k+'s'),m)+' '+tag,lk:lkf(11000+pa*2500,k+'sh'),cm:fcm(XWSH.concat(XWFB),k+'sc',3,m)})}
+  const rw=r.rw!=null?r.rw:r.w;
+  if(r.rt&&inW(rw)){const rc=fcm(XWFB,k+'rc',2,m);if(WP&&r.wc)rc.push({u:hdq(WP.n),artist:1,go:'x33cp('+WP.id+')',t:r.wc});
+   out.push({kind:'gos',sub:'art',w:rw,mine,who:V,tx:r.rt+' '+tag,lk:lkf(26000+(V.pop||0)*8500,k+'r'),cm:rc})}
+  if(P&&r.m1&&inW(r.w1))out.push({kind:'gos',sub:'media',w:r.w1,mine,html:gcard(E,P,'ex','🔍 #'+fe+first(P),'CHISMELIGHT INVESTIGA'),tx:'💋 '+r.m1+' #Chismelight '+tag+pt+' '+hdq(E.n),lk:lkf(36000+pa*9000,k+'m1'),cm:fcm(XWI1,k+'i',3,m)});
+  if(P&&r.m2&&r.res&&r.res!='none'&&r.res!='split'&&inW(r.w2)){const rs=r.res,lab=rs=='fight'?'DISCUSIÓN CONFIRMADA':'SIN CRISIS';
+   out.push({kind:'gos',sub:'media',w:r.w2,mine,html:gcard(E,P,'ex','🔍 #'+fe+first(P),lab),tx:'💋 '+r.m2+' #Chismelight #'+fe+first(P),lk:lkf(42000+pa*10000,k+'m2'),cm:fcm(rs=='calm'?XWC:XWF2.concat(XWRB),k+'m2c',3,m)});
+   if(r.x2){const who=r.x2w=='P'?P:E;out.push({kind:'gos',sub:'art',w:r.w2,mine,who,tx:r.x2+' #'+fe+first(P),lk:lkf(24000+(who.pop||0)*8000,k+'x2'),cm:fcm(rs=='calm'?XWC:XWF2,k+'x2c',3,m)})}}
+ });
+ return out}
+const _xwAw=awardPosts;awardPosts=function(){const o=_xwAw();try{xwPosts().forEach(p=>o.push(p))}catch(er){console.error(er)}return o};
+
 window.gosX={tpOf,important,TPM,ROM,fst:first,flush:()=>{FC={k:'',v:null}}};
 const css2=document.createElement('style');css2.textContent=`.gos-img{border:1px solid #ff5fa255;border-radius:14px;margin:8px 0;padding:14px 10px;text-align:center;color:#fff;background:radial-gradient(circle at 50% 0%,#ff5fa255,transparent 60%),linear-gradient(160deg,#2a0f1d,#15151f 70%)}.gos-img small{display:block;font-size:10px;letter-spacing:.2em;color:#ff8fc2;font-weight:700;margin-bottom:8px}.gos-faces{display:flex;align-items:center;justify-content:center;gap:10px}.gos-faces>b{font-size:26px}.gos-av{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;font-style:normal;border:2px solid #ffffff33}.gos-n{font-family:Georgia,serif;font-size:15px;margin-top:8px}.gos-s{font-size:12px;color:#ff8fc2;letter-spacing:.08em;margin-top:2px}.gos-p{border-left:3px solid #ff5fa2}.gos-pr select{width:100%;margin:4px 0 8px;padding:8px;border-radius:10px;background:#1d1a2e;border:1px solid #ff5fa255;color:var(--t,#fff)}.gos-pr label{display:block;font-size:12px;color:var(--m);margin-top:6px}.gos-ch{font-size:13px;margin:6px 0 10px;line-height:1.5}`;document.head.appendChild(css2);
 })();
@@ -4752,7 +4781,102 @@ const _nomSup=nominate;nominate=function(){_nomSup();try{const recs=(S.nrec||[])
   out.push('🏆 <b>'+e(a.n)+'</b> queda nominado en <b>'+tot+'</b> categoría(s). Tu recomendación sumó <b>'+add.length+'</b>'+(add.length?': '+add.map(z=>e(z.c)).join(', '):' (ya estaba nominado por mérito propio en las demás)')+'.')});
   if(out.length)popup({ic:'📨',t:'Recording Academy: resultado de tu recomendación',html:out.join('<br><br>'),btns:[{l:'Genial',p:1}]})}catch(er){console.error(er)}};
 })();
-const _exG=ex;ex=function(){_exG();try{tick();window.gosBackTick&&window.gosBackTick();window.gosReasonTick&&window.gosReasonTick();(()=>{const g=GS();g.apx=g.apx||{};Object.keys(g.ap).forEach(k=>{if(S.week-g.ap[k].w>8){delete g.ap[k];g.apx[k]=1}})})();window.gosX&&window.gosX.flush()}catch(er){console.error(er)}};
+/* ---- Premios → indirecta del ex, respuesta del ganador, pareja del ex e investigación de Chismelight ---- */
+(()=>{
+const XW=()=>{const g=GS(),x=g.xw=g.xw||{};x.done=x.done||{};x.list=x.list||[];x.id=x.id||0;return x},
+ AWN={gram:'los Grammy',bbma:'los Billboard Music Awards',vma:'los MTV VMAs'},AWH={gram:'#Grammys',bbma:'#BBMAs',vma:'#VMAs'},
+ H=n=>'@'+(String(n).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'')||'user'),
+ P2=(a,k)=>a[hs(k)%a.length],OKA=a=>!!a&&!a.ret&&a.deb!=null&&(a.age==null||a.age>=18),
+ COUP=['dating','engaged','married'],
+ sAf=(p,q,d)=>{try{window.x22t.setAff(p,q,af(p,q)+d)}catch(_){}},
+ md=(a,d)=>{if(a&&a.mood!=null)a.mood=Math.max(0,Math.min(100,a.mood+d))},
+ partnerX=(id,not)=>{const g=GS();for(const k in g.cp){const c=g.cp[k];if(COUP.includes(c.st)&&(c.a==id||c.b==id)){const o=c.a==id?c.b:c.a;if(o!=not&&S.A[o]&&!S.A[o].ret)return{o:S.A[o],k,c}}}return null};
+const T_EX={
+ mature:['Felicidades, {Wh}. Siempre supe que llegarías lejos 🤍','Qué orgullo verte ahí arriba, {Wh}. Se nota todo el esfuerzo 🥂','Te lo mereces, {Wh}. Gracias por lo vivido y mucho éxito 🤍'],
+ shade:['Siempre dije que ganarías algo… qué bueno que por fin alguien más lo ve, {Wh} 🙂','Felicidades, {Wh}. Qué curioso cómo cambian las prioridades cuando hay un trofeo de por medio 🏆🙃','Un premio precioso, {Wh}. Ojalá se vea igual de bien desde arriba que desde donde yo estaba 🙂'],
+ sad:['Hay canciones que ahora duelen más 🎶 Felicidades de corazón, {Wh}','Lo vi en la transmisión y se me apretó el pecho. Felicidades, {Wh} 🌧️','Qué orgullo y qué nostalgia a la vez, {Wh}. Felicidades 🥀'],
+ ce:['Siempre creí en ti, {Wh}. Pocas veces lo dije en voz alta… y lo sé: llegué tarde 🥀','Los premios se ganan; las segundas oportunidades, no tanto. Felicidades, {Wh} 🙏','A veces se valora tarde lo que se tuvo cerca. Felicidades por el premio, {Wh} 🥀'],
+ cw:['Felicidades, {Wh}. Qué bueno que la lealtad no se mide en trofeos 🙂','Muchos premios, pocas verdades. Felicidades, {Wh} 🥂','Que disfrutes el premio, {Wh}. Ojalá la sinceridad también tuviera categoría 🏆🙂'],
+ bk:['Felicidades, {Wh}. Ya sabes dónde encontrarme, como las otras veces 😉','Siempre supe que llegarías aquí, {Wh}. Y no sería la primera vez que lo celebramos juntos 💫','Dicen que las historias como la nuestra siempre encuentran la manera de volver 🔁 Felicidades, {Wh}']};
+const T_RI={
+ pl:['Gracias a todos los que creyeron en mí… cada quien sabe desde cuándo 🙃','Un premio no se agradece con indirectas, pero gracias igual, {Eh} 🏆','Gracias por el mensaje, {Eh}. Se nota que lo escribiste con mucha calma 🙂'],
+ ce:['Qué curioso: ahora sí creías en mí 🙃 Gracias a quienes lo hicieron desde siempre','Gracias por el mensaje, {Eh}. Lástima que la fe llegó con retraso 🕰️','Se agradece la sinceridad… tardía 🥀'],
+ cw:['No voy a entrar en esto. La música habla y yo ya dije lo mío 🎶','Cada quien cuenta la historia que le conviene 🤷 Gracias por los deseos, {Eh}','Hoy toca celebrar, no explicar. Gracias a quienes sí estuvieron 🏆'],
+ bk:['Gracias, {Eh}. Las puertas giratorias marean, pero se agradece el detalle 🚪🙃','Qué lindo mensaje. Hoy me quedo con la música, ¿sí? 🎶','Las puertas abiertas también se cierran, {Eh} 🚪🙂']};
+const T_RK=['Gracias por el mensaje, {Eh}, de verdad. Los buenos recuerdos también cuentan 🤍','Se agradece mucho, {Eh}. Que te vaya increíble 💜','Gracias por las palabras. Hoy toca celebrar con cariño 🥂'];
+const T_PC=['???','¿Y esto? 🤨','¿¿Qué fue eso?? 🤨','Mmm… ¿y ese mensaje? 👀','???? 😐'],
+ T_ER=['Hablamos en casa 🙄','No es lo que parece 🙏','Es solo una felicitación, amor 😅'],
+ T_PQ=['¿Felicitaciones con indirecta incluida? Qué interesante 🤨 {Eh}','Me pueden explicar ese mensaje a ver si yo también lo entiendo ❓❓❓','Hay formas y formas de felicitar… 🤨 {Eh}'],
+ T_WC=['Tú sigue a lo tuyo, que lo importante es esto 🏆❤️','Los trofeos hablan solos, mi vida 🏆❤️','Qué orgullo. Y qué ganas de dar por cerrado este tema 🙄❤️'],
+ T_X2P=['Hay conversaciones que se tienen en privado 🙂','No voy a hablar de esto en redes. Gracias por respetar 🙏','Cuando hay algo que decir, se dice de frente, no en redes 🙂'],
+ T_X2E=['Los rumores son solo eso: rumores ❤️ Gracias, {Ph}','Todo bien por aquí. Gracias por la preocupación 🙂❤️','Nos vemos mejor juntos que en cualquier titular ❤️ {Ph}'];
+const T0={
+ pl:['{E} felicita a su ex {W} tras ganar «{CAT}»… ¿con indirecta incluida?','En {AW}, {W} se llevó «{CAT}» y {E} no tardó en publicar un mensaje que los fans leen entre líneas.'],
+ ce:['{E} le escribe a {W} tras el premio: «siempre creí en ti»','El mensaje de {E} suena a arrepentimiento. Los fans recuerdan cómo terminó todo entre ellos.'],
+ cw:['{E} felicita a {W} con un mensaje que sabe a reclamo','Tras el triunfo de {W} en «{CAT}», {E} publicó una felicitación con «sinceridad» y «lealtad» entre líneas. Los fans conocen la historia.'],
+ bk:['¿Otra vez? {E} le escribe a {W} tras su premio','No sería la primera vez que se reencuentran. El mensaje de {E} deja la puerta entreabierta y los fans ya hacen apuestas.']};
+const mkM=(E,V,P,r)=>({E:E.n,W:V.n,P:P?P.n:'',Eh:H(E.n),Wh:H(V.n),Ph:P?H(P.n):'',AW:AWN[r.ev]||'los premios',CAT:r.cat||'su categoría'});
+const mkReply=(r,ch)=>{const E=S.A[r.e],V=S.A[r.wn],P=r.pt!=null?S.A[r.pt]:null,m=mkM(E,V,P,r);return ch=='ind'?fill(P2(T_RI[r.tone=='pl'?'pl':r.tone],'xri'+r.id),m):ch=='kind'?fill(P2(T_RK,'xrk'+r.id),m):null};
+function xwApply(r,ch){const E=S.A[r.e],V=S.A[r.wn];if(!E||!V)return '';
+ if(ch=='ind'){sAf(E.id,V.id,-10);const p=Math.max(.25,Math.min(.75,.5+((V.pop||0)-(E.pop||0))/200)),win=rr('xwa'+r.id)<p;
+  if(win){V.pop=cl(V.pop+2);E.pop=cl(E.pop-1);return '🔥 La indirecta de <b>'+e(V.n)+'</b> funcionó: <b>+2 popularidad</b> para '+e(V.n)+' y <b>−1</b> para '+e(E.n)+'. Afinidad −10. Ya hay publicación y reacciones en Publicaciones.'}
+  V.pop=cl(V.pop-1);md(V,-3);return '🥶 La indirecta de <b>'+e(V.n)+'</b> no cayó bien: <b>−1 popularidad</b> y −3 de ánimo. Afinidad −10. Los fans ya lo comentan en Publicaciones.'}
+ if(ch=='kind'){sAf(E.id,V.id,3);md(V,2);md(E,2);return '🤍 La respuesta cariñosa de <b>'+e(V.n)+'</b> gustó mucho. Afinidad +3 y ánimo +2 para ambos.'}
+ return ''}
+function xwMake(Ev,cd,V,E,c,k,ch,rn){const x=XW(),g=GS(),id=++x.id,pr=partnerX(E.id,V.id),wpP=partnerX(V.id,E.id);
+ const tone=ch==E.id?'ce':ch==V.id?'cw':rn>0?'bk':'pl',sub=tone!='pl'?tone:((E.mood!=null&&E.mood<40)?'sad':(hs('xs'+id+Ev.key)%2?'shade':'mature'));
+ const r={id,ev:Ev.ev,y:Ev.y,cat:cd.c,w:S.week,wn:V.id,e:E.id,ck:k,tone,sub,tg:AWH[Ev.ev]||'#Premios',pt:pr?pr.o.id:null,pck:pr?pr.k:null,wp:wpP?wpP.o.id:null,me:(V.l===0||E.l===0||(pr&&pr.o.l===0))?1:0};
+ const P=pr?pr.o:null,m=mkM(E,V,P,r);
+ r.t=fill(P2(T_EX[sub],'xt'+id),m);
+ if(P){r.pc=P2(T_PC,'xpc'+id);r.er=P2(T_ER,'xer'+id);if(hs('xpq'+id)%100<55)r.pq=fill(P2(T_PQ,'xpq2'+id),m)}
+ if(wpP&&hs('xwc'+id)%100<60)r.wc=P2(T_WC,'xwc2'+id);
+ const pp=P?' '+P.n+', la pareja de '+E.n+', reaccionó con signos de interrogación.':'';
+ r.m0=fill(T0[tone][0],m)+(P?' Su pareja, '+P.n+', reaccionó con «???».':'');
+ const ar=add('ex',fill(T0[tone][0],m),fill(T0[tone][1],m)+pp,[E.id,V.id]);ar.tp='xw';
+ if(V.l!==0){const q=rr('xwr'+id),pi=tone=='ce'?.85:tone=='cw'?.55:tone=='bk'?.5:(sub=='mature'?.15:.4),pk2=pi+(sub=='mature'?.55:.3);r.rp=q<pi?'ind':q<pk2?'kind':null;r.rw=S.week;if(r.rp){r.rt=mkReply(r,r.rp);xwApply(r,r.rp)}}
+ else r.pend=1;
+ x.list.push(r);if(x.list.length>30)x.list=x.list.slice(-30);
+ if(tone=='bk'&&!P&&!wpP&&hs('xrb'+id)%100<35){const rb=add('ro',fill('¿Reconciliación? Rumores de que {E} y {W} podrían volver tras el premio',m),fill('La felicitación de {E} y la respuesta de {W} encendieron los rumores. Ninguno confirma nada.',m),[E.id,V.id]);rb.tp='rb';rb.imp=1;rb.ck=k}
+ if(r.me)news('💋 Chismelight: '+fill(T0[tone][0],m));
+ if(r.pend){popup({ic:'🏆',t:'Indirecta tras el premio',html:'<b>'+e(E.n)+'</b>, ex de <b>'+e(V.n)+'</b>, publicó tras su premio «'+e(cd.c)+'»:<br><br><i>'+e(r.t)+'</i>'+(P?'<br><br><b>'+e(P.n)+'</b>, pareja de '+e(E.n)+', reaccionó con signos de interrogación.':'')+'<br><br><b>¿Cómo responde '+e(V.n)+'?</b>',btns:[{l:'🔥 Responder con indirecta',p:1,fn:()=>window.gosXwReply(id,'ind')},{l:'🤍 Agradecer con cariño',fn:()=>window.gosXwReply(id,'kind')},{l:'🤐 Ignorarla',fn:()=>window.gosXwReply(id,'none')}]})}
+ return r}
+function xwEvent(Ev){const g=GS(),seen={},used={};let made=0;
+ (Ev.L||[]).forEach(c=>{if(!c||c.pr||c.w==null||/^Disquera/.test(c.c)||/Productor/.test(c.c))return;let a=null;if(/Artista/.test(c.c)||/^Clase de /.test(c.c))a=c.w;else{const s=S.S[c.w];a=s?s.a:null}const A=a!=null?S.A[a]:null;if(!OKA(A))return;const pr=(/Año/.test(c.c)?2:/Artista/.test(c.c)?1:0)+(A.l===0?1.5:0);if(!seen[a]||seen[a].pr<pr)seen[a]={a,c:c.c,pr}});
+ const cand=Object.values(seen).sort((p,q)=>q.pr-p.pr||(S.A[q.a].pop||0)-(S.A[p.a].pop||0));
+ for(const cd of cand){if(made>=5)break;const V=S.A[cd.a];let best=null;
+  Object.keys(g.cp).forEach(k=>{const c=g.cp[k];if(!['split','ex'].includes(c.st)||(c.a!=V.id&&c.b!=V.id))return;const E=S.A[c.a==V.id?c.b:c.a];if(!OKA(E)||used[E.id]||E.id==V.id)return;
+   const ch=c.rs&&(c.rs.k=='inm'||c.rs.k=='ino')?c.rs.ch:null,rn=c.rn||0,a2=af(V.id,E.id),sc=(ch!=null?2:0)+rn*1.2+a2/60+(E.pop||0)/100-Math.min(1,(S.week-c.w)/300);
+   if(!best||sc>best.sc)best={c,k,E,ch,rn,a2,sc}});
+  if(!best)continue;const {c,k,E,ch,rn,a2}=best,mine=(V.l===0||E.l===0);
+  const p=Math.max(.12,Math.min(.92,.22+Math.min(.3,a2/250)+Math.min(.2,rn*.1)+(ch!=null?.25:0)+((E.pop||0)>=50?.1:0)+(mine?.15:0)));
+  if(rr('xwg'+Ev.key+'|'+V.id+'|'+E.id)>=p)continue;
+  used[E.id]=1;made++;xwMake(Ev,cd,V,E,c,k,ch,rn)}}
+function xwStages(){const x=XW(),g=GS();x.list.forEach(r=>{
+ if(r.pend&&S.week-r.w>=1)r.pend=0;
+ if(r.pt==null)return;const E=S.A[r.e],V=S.A[r.wn],P=S.A[r.pt];if(!E||!V||!P)return;const m=mkM(E,V,P,r);
+ if(!r.s1&&S.week>=r.w+1){r.s1=1;r.w1=S.week;r.m1=fill('Chismelight investiga: ¿crisis entre {E} y {P} tras la felicitación a {W}?',m);
+  const ar=add('ex',r.m1,fill('Nuestro equipo habló con fuentes cercanas a la pareja. Hasta ahora, {P} solo ha dicho «???» y {E} insiste en que fue «solo un mensaje amable». Seguimos preguntando.',m),[E.id,P.id]);ar.tp='xw';return}
+ if(r.s1&&!r.s2&&S.week>=r.w1+1){r.s2=1;r.w2=S.week;const c=g.cp[r.pck],live=c&&COUP.includes(c.st)&&(c.a==P.id||c.b==P.id)&&(c.a==E.id||c.b==E.id);
+  if(!live){r.res='none';return}
+  const roll=rr('xwres'+r.id),fb=.38+((r.tone=='ce'||r.tone=='cw'||r.tone=='bk'||r.sub=='shade')?.1:0);
+  r.res=roll<.08?'split':roll<.08+fb?'fight':'calm';
+  if(r.res=='split'){const mar=c.st=='married';c.st='split';c.w=S.week;g.pt[r.pck]=S.week;md(E,-6);md(P,-6);sAf(E.id,P.id,-10);art('bk',mar?DIV:SPL,[E.id,P.id],'xws'+r.id);news('💔 '+E.n+' y '+P.n+' terminan tras la polémica con '+V.n);return}
+  if(r.res=='fight'){md(E,-4);md(P,-4);sAf(E.id,P.id,-8);r.m2=fill('Confirmado: {E} y {P} discutieron por el mensaje a {W}',m);r.x2=fill(P2(T_X2P,'xx2'+r.id),m);r.x2w='P';
+   const ar=add('ex',r.m2,fill('Según personas cercanas, la conversación subió de tono y terminó con puerta cerrada. Ninguno quiere comentar, pero los fans notaron «me gusta» eliminados.',m),[E.id,P.id]);ar.tp='xw'}
+  else{r.m2=fill('Sin crisis: {E} y {P} desmienten pelea por el mensaje a {W}',m);r.x2=fill(P2(T_X2E,'xx2'+r.id),m);r.x2w='E';
+   const ar=add('ex',r.m2,fill('Chismelight investigó y no encontró nada: la pareja fue vista junta y sonriendo. «Fue solo un malentendido», dijo una fuente.',m),[E.id,P.id]);ar.tp='xw'}}
+ })}
+window.gosXwReply=function(id,ch){try{const x=XW(),r=x.list.find(z=>z.id==id);if(!r||!r.pend)return 'Ya respondiste a esta indirecta.';r.pend=0;const V=S.A[r.wn];
+ if(ch=='none'||!V){r.rp=null;try{window.gosX&&window.gosX.flush()}catch(_){}save();ui();return '🤐 '+e(V?V.n:'El artista')+' decide ignorar el mensaje. Sin respuesta pública, sin drama.'}
+ r.rp=ch;r.rw=S.week;r.rt=mkReply(r,ch);const msg=xwApply(r,ch);news('💋 '+V.n+' responde al mensaje de su ex tras el premio');try{window.gosX&&window.gosX.flush()}catch(_){}save();ui();return msg}catch(er){console.error(er);return 'No se pudo completar la acción.'}};
+window.gosAwTick=function(){try{const x=XW(),X2=window.X22?window.X22():null,evs=[];
+ (S.gh||[]).forEach(h=>{if(h&&h.y!=null)evs.push({key:'gram'+h.y,ev:'gram',y:h.y,wk:(h.y-2026)*52+51,L:h.noms||[]})});
+ if(X2&&X2.gal)Object.keys(X2.gal).forEach(z=>{const m=/^(bbma|vma)(\d+)$/.exec(z);if(m)evs.push({key:z,ev:m[1],y:+m[2],wk:(+m[2]-2026)*52+(m[1]=='bbma'?20:36),L:X2.gal[z]||[]})});
+ evs.forEach(Ev=>{if(x.done[Ev.key]||Ev.wk>S.week)return;x.done[Ev.key]=1;if(S.week-Ev.wk>1)return;xwEvent(Ev)});
+ xwStages()}catch(er){console.error(er)}};
+})();
+
+const _exG=ex;ex=function(){_exG();try{tick();window.gosAwTick&&window.gosAwTick();window.gosBackTick&&window.gosBackTick();window.gosReasonTick&&window.gosReasonTick();(()=>{const g=GS();g.apx=g.apx||{};Object.keys(g.ap).forEach(k=>{if(S.week-g.ap[k].w>8){delete g.ap[k];g.apx[k]=1}})})();window.gosX&&window.gosX.flush()}catch(er){console.error(er)}};
 })();
 
 if(load())ui();else{newGame(
