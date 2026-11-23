@@ -2633,7 +2633,7 @@ window.x33cp=function(id){try{const a=S.A[id];if(!a)return;const x=X(),y0=yr(S.w
    +line('Con afinidad alta son aliados para colaborar; con tensión pueden convertirse en rivales de verdad.'):line('No tienes artistas de '+e(a.g)+', así que no hay relación que mostrar.'));
  if(mg.length)h+=sub('⚡ Acciones con '+e(a.n))+'<div class="row"><span class="m">Con tu artista:</span><select id="x34m">'+mg.map(m=>'<option value="'+m.id+'">'+e(m.n)+' · '+AFN(T().aff(m.id,id))+'</option>').join('')+'</select></div>'+line('Colaborar y la gira suben la afinidad; la indirecta la baja. Cada acción tiene su enfriamiento por pareja.');
  const acts=mg.length?[{l:'🎤 Colaborar',d:fm(30000)+' · afinidad +10 · pide afinidad 25+',fn:()=>x34act('col',id)},{l:'🚌 Gira conjunta',d:fm(35000)+' · 8 sem · afinidad +10 · pide 40+',fn:()=>x34act('gira',id)},{l:'🕊️ Hacer las paces',d:fm(10000)+' · afinidad +8',fn:()=>x34act('paz',id)},{l:'📣 Indirecta pública',d:fm(5000)+' · afinidad −15 · con riesgo',fn:()=>x34act('ind',id)}]:[];
- apOpen(id,[['Resumen',P0],['Publicaciones',feedAll(a)],['Charts',P1],['Grammys',P2],['Galas',P3],['Relaciones',h]],acts);
+ apOpen(id,[['Resumen',P0],['Publicaciones',feedAll(a)],['Charts',P1],['Grammys',P2],['Galas',P3],['Relaciones',h+(window.gosSupportInfo?window.gosSupportInfo(a):'')]],acts.concat(window.gosSupportActs?window.gosSupportActs(a):[]));
 }catch(er){console.error(er)}};
 
 /* ---- v34: ex-artistas (contrato rescindido) rivales + acciones con rivales ---- */
@@ -4710,6 +4710,45 @@ window.gosBeefDo=function(id){try{const g=GS(),a=g.a.find(z=>z.id==id);if(!a||a.
  if(win){m.pop=Math.min(100,(m.pop||0)+3);r.pop=Math.max(0,(r.pop||0)-2);news('📣 '+m.n+' lanza una indirecta contra '+r.n+' y se vuelve viral')}else{m.pop=Math.max(0,(m.pop||0)-2);if(m.mood!=null)m.mood=Math.max(0,m.mood-5);news('📣 La indirecta de '+m.n+' contra '+r.n+' sale mal')}
  window.gosBeef(m,r,win,'ch');save();ui();
  return win?'🔥 La indirecta se hizo viral: <b>+3 popularidad</b> para '+e(m.n)+' y <b>−2</b> para '+e(r.n)+'. Afinidad −15. Ya hay publicación y reacciones de los fans en Publicaciones.':'🥶 La indirecta no cayó bien: <b>−2 popularidad</b> y −5 de ánimo para '+e(m.n)+'. Afinidad −15. Los fans ya lo comentan en Publicaciones.'}catch(er){console.error(er);return 'No se pudo completar la acción.'}};
+
+/* ---- Apoyo a artistas de otras disqueras: lanzamiento de campaña y recomendación de nominaciones ---- */
+const SUP_REL=1000000,SUP_NOM=3000000;
+const supOk=a=>!!a&&a.l!=null&&a.l!==0&&!a.ret&&S.L[a.l]&&!S.L[a.l].out;
+const yrN=()=>yr(S.week);
+const elig=a=>{const yi=Math.floor(S.week/52);return S.S.filter(s=>s.a==a.id&&Math.floor(s.wk/52)==yi&&s.wk<=S.week&&s.weeks>0)};
+window.gosSupportActs=function(a){try{if(!supOk(a))return [];return [{l:'🚀 Apoyar lanzamiento',d:fm(SUP_REL)+' · lo obliga a lanzar un álbum y un single de campaña',fn:()=>window.gosSup('rel',a.id)},{l:'🏆 Apoyar nominaciones',d:fm(SUP_NOM)+' · recomendación de categorías a la Recording Academy',fn:()=>window.gosSup('nom',a.id)}]}catch(_){return []}};
+window.gosSupportInfo=function(a){try{if(!supOk(a))return '';const sc=(S.supCamp||[]).filter(m=>m.a==a.id&&S.week-m.w<60),rc=(S.nrec||[]).find(z=>z.id==a.id&&z.y==yrN());let h='<div class="sub">🏢 Apoyo de tu disquera a '+e(a.n)+'</div><div class="m">Puedes financiar su lanzamiento o recomendar a la Recording Academy sus categorías para los Grammys. Los botones están al final de esta pestaña.</div>';if(sc.length)h+='<div class="m">🚀 Campaña de lanzamiento en marcha: '+sc[0].plans.map(p=>p.type.toLowerCase()+' en sem '+(p.wk%52+1)+' '+yr(p.wk)).join(' y ')+'.</div>';if(rc)h+='<div class="m">🏆 Recomendación enviada para los Grammys '+rc.y+(rc.done?' · aplicada':' · se aplica al anunciar nominaciones')+'.</div>';return h}catch(_){return ''}};
+window.gosSup=function(kind,id){const a=S.A[id];if(!supOk(a)){popup({ic:'🏢',t:'Apoyo',html:'Este artista ya no pertenece a otra disquera.',btns:[{l:'Cerrar',p:1}]});return}
+ const cost=kind=='rel'?SUP_REL:SUP_NOM,L=S.L[a.l];
+ if(S.L[0].money<cost){popup({ic:'🏢',t:'Fondos insuficientes',html:'Cuesta <b>'+fm(cost)+'</b> y no tienes ese dinero.',btns:[{l:'Cerrar',p:1}]});return}
+ const x=(S.supCd=S.supCd||{})[id]||{};
+ if(kind=='rel'){if(a.hi&&S.week<a.hi.to){popup({ic:'🚀',t:'Apoyar lanzamiento',html:e(a.n)+' está en hiatus y no puede lanzar ahora.',btns:[{l:'Cerrar',p:1}]});return}
+  if(a.fwl){popup({ic:'🚀',t:'Apoyar lanzamiento',html:e(a.n)+' ya tiene su álbum de despedida programado.',btns:[{l:'Cerrar',p:1}]});return}
+  if(x.rel!=null&&S.week-x.rel<52){popup({ic:'🚀',t:'Apoyar lanzamiento',html:'Ya apoyaste una campaña de '+e(a.n)+' hace poco. Podrás repetirlo en '+(52-(S.week-x.rel))+' semanas.',btns:[{l:'Cerrar',p:1}]});return}
+  popup({ic:'🚀',t:'¿Apoyar el lanzamiento?',html:'Pagas <b>'+fm(SUP_REL)+'</b> a <b>'+e(L.n)+'</b> para financiar una campaña de <b>'+e(a.n)+'</b>. La disquera <b>lo obliga a lanzar un álbum y un single de campaña</b> en las próximas semanas, con más marketing, crítica y viralidad.',btns:[{l:'🚀 Apoyar',p:1,fn:()=>window.gosSupDo('rel',id)},{l:'Cancelar'}]});return}
+ const wk=S.week%52;
+ if(wk>=43){popup({ic:'🏆',t:'Apoyar nominaciones',html:'Las nominaciones de este año ya se anunciaron. Puedes enviar la recomendación durante la elegibilidad (semanas 1 a 43) del próximo ciclo.',btns:[{l:'Cerrar',p:1}]});return}
+ if((S.nrec||[]).some(z=>z.id==id&&z.y==yrN())){popup({ic:'🏆',t:'Apoyar nominaciones',html:'Ya enviaste la recomendación de '+e(a.n)+' para los Grammys '+yrN()+'.',btns:[{l:'Cerrar',p:1}]});return}
+ const el=elig(a);popup({ic:'🏆',t:'¿Recomendar a la Recording Academy?',html:'Pagas <b>'+fm(SUP_NOM)+'</b> para enviar a la <b>Recording Academy</b> una recomendación de las categorías de <b>'+e(a.n)+'</b>. Al anunciarse las nominaciones (semana 44) será incluido en hasta 3 de sus mejores categorías.'+(el.length?'':'<div class="m">Ahora mismo no tiene lanzamientos elegibles este año. Si no lanza nada antes de la semana 44, se te reembolsa.</div>'),btns:[{l:'🏆 Enviar recomendación',p:1,fn:()=>window.gosSupDo('nom',id)},{l:'Cancelar'}]})};
+window.gosSupDo=function(kind,id){try{const a=S.A[id];if(!supOk(a))return 'Este artista ya no pertenece a otra disquera.';const cost=kind=='rel'?SUP_REL:SUP_NOM,L=S.L[a.l];if(S.L[0].money<cost)return 'No tienes fondos suficientes.';
+ S.supCd=S.supCd||{};const x=S.supCd[id]=S.supCd[id]||{};
+ if(kind=='nom'){if(S.week%52>=43||(S.nrec||[]).some(z=>z.id==id&&z.y==yrN()))return 'Ya no se puede enviar la recomendación este año.';S.L[0].money-=cost;S.nrec=S.nrec||[];S.nrec.push({id,y:yrN(),w:S.week,cost});news('📨 '+S.name+' envía a la Recording Academy una recomendación de categorías para '+a.n);save();ui();
+  return '📨 La recomendación de <b>'+e(a.n)+'</b> ya está en la Recording Academy. Se aplicará cuando se anuncien las nominaciones (semana 44). Costo: '+fm(cost)+'.'}
+ if(a.hi&&S.week<a.hi.to)return e(a.n)+' está en hiatus.';if(a.fwl)return 'Ya tiene su álbum de despedida programado.';if(x.rel!=null&&S.week-x.rel<52)return 'Ya apoyaste una campaña hace poco.';
+ S.L[0].money-=cost;L.money=(L.money||0)+cost;x.rel=S.week;
+ const first=rr('sf'+id+S.week)<.58?'Álbum':'Single',second=first=='Álbum'?'Single':'Álbum',w1=S.week+1+Math.floor(rr('sw1'+id+S.week)*3),w2=w1+7+Math.floor(rr('sw2'+id+S.week)*6),memo={a:id,l:a.l,w:S.week,plans:[{wk:w1,type:first,money:Math.round(cost*.62)},{wk:w2,type:second,money:Math.round(cost*.38)}]};
+ memo.plans.forEach((p,i)=>{const s=mkS(a,p.wk,Math.min(100,92+Math.floor(rr('sm'+id+i+S.week)*9)),p.type);s.l=a.l;s.viral=Math.max(s.viral||0,.6+rr('sv'+id+i+S.week)*.5);s.q=Math.min(100,s.q+3+Math.floor(rr('sq'+id+i+S.week)*6));if(typeof crit==='function'){const c=crit(s.q,s.g);s.cs=c.cs;s.crit=c.avg}s.sup=memo.w;p.sid=s.id;const sp=Math.min(Math.max(0,(L.money||0)-15000),p.money);L.money=(L.money||0)-sp});
+ S.supCamp=S.supCamp||[];S.supCamp.push(memo);if(S.supCamp.length>40)S.supCamp=S.supCamp.slice(-40);a.mood=Math.min(100,(a.mood||0)+5);L.prest=Math.min(100,(L.prest||0)+1);
+ news('🚀 '+S.name+' apoya el lanzamiento de '+a.n+': '+L.n+' anuncia '+memo.plans.map(p=>p.type.toLowerCase()+' en sem '+(p.wk%52+1)).join(' y ')+' de campaña');save();ui();
+ return '🚀 Campaña en marcha: <b>'+e(a.n)+'</b> lanzará un <b>'+first.toLowerCase()+'</b> en la sem '+(w1%52+1)+' y un <b>'+second.toLowerCase()+'</b> en la sem '+(w2%52+1)+' con <b>'+e(L.n)+'</b>. Costo: '+fm(cost)+'. Su ánimo sube 5.'}catch(er){console.error(er);return 'No se pudo completar la acción.'}};
+/* al anunciarse las nominaciones, se aplica la recomendación a la Recording Academy */
+const _nomSup=nominate;nominate=function(){_nomSup();try{const recs=(S.nrec||[]).filter(z=>z.y==yrN()&&!z.done);if(!recs.length)return;const out=[];recs.forEach(rc=>{const a=S.A[rc.id];rc.done=1;if(!a){return}
+  const cs=cats().map(([c,l])=>{const bl=best(l,0),r=bl.findIndex(z=>z.s.a==a.id);if(r<0)return null;const en=S.noms.find(z=>z.c==c&&!z.pr);if(!en)return null;return{c,en,s:bl[r].s,r,already:en.n.includes(bl[r].s.id)}}).filter(Boolean);
+  if(!cs.length){S.L[0].money+=rc.cost;rc.refund=1;out.push('⚠️ <b>'+e(a.n)+'</b> no tenía lanzamientos elegibles: la Recording Academy no pudo aplicar la recomendación y se te reembolsaron <b>'+fm(rc.cost)+'</b>.');news('📨 La recomendación de '+a.n+' no se aplicó: sin lanzamientos elegibles (reembolso)');return}
+  const add=cs.filter(z=>!z.already).sort((p,q)=>p.r-q.r).slice(0,3);add.forEach(z=>{z.en.n.push(z.s.id)});const tot=cs.filter(z=>z.already).length+add.length;
+  a.prest=Math.min(100,(a.prest||0)+1);news('🏆 La Recording Academy nomina a '+a.n+' en '+(add.length+cs.filter(z=>z.already).length)+' categoría(s) tras la recomendación de '+S.name);
+  out.push('🏆 <b>'+e(a.n)+'</b> queda nominado en <b>'+tot+'</b> categoría(s). Tu recomendación sumó <b>'+add.length+'</b>'+(add.length?': '+add.map(z=>e(z.c)).join(', '):' (ya estaba nominado por mérito propio en las demás)')+'.')});
+  if(out.length)popup({ic:'📨',t:'Recording Academy: resultado de tu recomendación',html:out.join('<br><br>'),btns:[{l:'Genial',p:1}]})}catch(er){console.error(er)}};
 })();
 const _exG=ex;ex=function(){_exG();try{tick();window.gosBackTick&&window.gosBackTick();window.gosReasonTick&&window.gosReasonTick();(()=>{const g=GS();g.apx=g.apx||{};Object.keys(g.ap).forEach(k=>{if(S.week-g.ap[k].w>8){delete g.ap[k];g.apx[k]=1}})})();window.gosX&&window.gosX.flush()}catch(er){console.error(er)}};
 })();
