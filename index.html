@@ -4532,7 +4532,7 @@ function tick(){const g=GS();if(g.lw===S.week)return;g.lw=S.week;const act=pool(
   else if(roll<.50){const A=wp(act,wA,key+'a'),rest=act.filter(a=>a.id!=A.id&&a.g===A.g&&af(A.id,a.id)<45);if(rest.length){const B=wp(rest,b=>100-af(A.id,b.id),key+'b');done=art('bf',BEEF,[A.id,B.id],key+'f')}}
   if(!done){const A=wp(act,wA,key+'a');done=art('ex',SOLO,[A.id],key+'o')}first.push(done)}
  const top=first.find(a=>a.me)||first[0];if(top)news('💋 Chismelight: '+top.t)}
-window.gosAfter=function(y){const g=GS();if(g.ap[y])return g.ap[y];
+window.gosAfter=function(y){const g=GS();if(g.ap[y])return g.ap[y];g.apx=g.apx||{};if(g.apx[y])return null;
  const nomA={},win={},cat={};(S.noms||[]).forEach(c=>{if(c.pr||c.lab)return;(c.n||[]).forEach(id=>{const s=S.S[id];if(s&&S.A[s.a])nomA[s.a]=1});const w=c.w!=null?S.S[c.w]:null;if(w&&S.A[w.a]){win[c.c]=w.a;cat[c.c]=c}});
  let att=Object.keys(nomA).map(i=>S.A[+i]).filter(a=>a&&!a.ret&&adult(a)).sort((p,q)=>q.pop-p.pop);const mi=att.filter(a=>a.l===0);att=mi.slice(0,6).concat(att.filter(a=>a.l!==0).slice(0,12));if(att.length<2)return{items:[]};
  const use={},ids0=att.map(a=>a.id),has=i=>ids0.includes(i),items=[];
@@ -4544,7 +4544,7 @@ window.gosAfter=function(y){const g=GS();if(g.ap[y])return g.ap[y];
  for(const cn of ['Canción del Año','Grabación del Año','Mejor Artista Nuevo']){const c=cat[cn],w=win[cn];if(!c||w==null||!has(w))continue;const L=(c.n||[]).map(i=>S.S[i]&&S.S[i].a).filter(i=>i!=null&&i!==w&&has(i)&&(use[i]||0)<2);if(!L.length)continue;const l=L[Math.floor(rr('c3'+y+cn)*L.length)];use[l]=(use[l]||0)+1;use[w]=(use[w]||0)+1;push('{A} felicitó a {B} por ganar «{CAT}» con una sonrisa que daba miedo','Dijo «te lo mereces» seis veces seguidas. La séptima vez fue «voy al baño».',[l,w],0,{CAT:cn});break}
  const order=AP.map((t,i)=>({t,h:hs(y+'|ap|'+i)})).sort((p,q)=>p.h-q.h).map(z=>z.t);let gi=0;
  for(const t of order){if(items.length>=8)break;const ids=take(t.n,'ap'+y+gi,gi<3);gi++;if(!ids)continue;push(t.t,t.x,ids,t.ru)}
- g.ap[y]={w:S.week,items};Object.keys(g.ap).sort().slice(0,-6).forEach(k=>delete g.ap[k]);news('🥂 Chismelight: la after party oficial de los Grammys '+y+' dejó chismes de sobra');return g.ap[y]};
+ g.ap[y]={w:S.week,items};g.apx[y]=1;news('🥂 Chismelight: la after party oficial de los Grammys '+y+' dejó chismes de sobra');return g.ap[y]};
 const css=document.createElement('style');css.textContent=`.gs-mast{text-align:center;padding:10px 6px 6px}.gs-mast b{display:block;font-size:24px;letter-spacing:.2em;color:#ff5fa2;font-family:Georgia,serif}.gs-mast span{color:var(--m);font-size:12px;letter-spacing:.08em}
 .gs-chips{display:flex;gap:6px;margin:6px 0 8px}.gs-chip{padding:7px 12px;font-size:12px;border-radius:16px}.gs-chip.on{background:#ff5fa2;color:#fff;border-color:#ff5fa2}
 .gs-a{border-top:1px solid var(--b);padding:10px 2px}.gs-a b{display:block;font-size:15px;margin:3px 0}.gs-a p{margin:0;font-size:13px;line-height:1.45;color:#d6d6e2}.gs-k{font-size:11px;letter-spacing:.06em;color:#ff5fa2}.gs-a.me{border-left:3px solid var(--a);padding-left:8px;background:#b388ff10}
@@ -4587,7 +4587,7 @@ function presentCard(){const g=GS(),mine=mineA();if(!mine.length)return '';const
  (rec.length?'<div class="card"><h3>📱 Reacciones de los fans</h3><div class="m">Los chismes más importantes tienen publicaciones y reacciones en Publicaciones.</div>'+rec.map(a=>{const A2=S.A[a.a[0]],B2=S.A[a.a[1]];if(!A2||!B2)return '';const tp=X().tpOf(a),tg=X().ROM.includes(tp)?'#'+X().fst(A2)+X().fst(B2):'#'+X().fst(A2)+'Vs'+X().fst(B2);return '<div class="gs-cp">'+(X().TPM[tp]||X().TPM.ro)[0]+' <b>'+e(A2.n)+'</b> + <b>'+e(B2.n)+'</b> <button class="gs-chip" style="padding:3px 9px" onclick="trGo48(\''+tg+'\')">Ver reacciones</button></div>'}).join('')+'</div>':'')}
 const _VCg=V.Chisme;V.Chisme=function(){return _VCg()+presentCard()};
 })();
-const _exG=ex;ex=function(){_exG();try{tick();window.gosX&&window.gosX.flush()}catch(er){console.error(er)}};
+const _exG=ex;ex=function(){_exG();try{tick();(()=>{const g=GS();g.apx=g.apx||{};Object.keys(g.ap).forEach(k=>{if(S.week-g.ap[k].w>8){delete g.ap[k];g.apx[k]=1}})})();window.gosX&&window.gosX.flush()}catch(er){console.error(er)}};
 })();
 
 if(load())ui();else{newGame(
